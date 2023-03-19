@@ -32,8 +32,6 @@ public class Participant implements Serializable {
     @OneToMany(mappedBy = "participant")
     private Set<SectionParticipant> sectionParticipants;
 
-    @OneToMany(mappedBy = "participant")
-    private Set<ConferenceParticipant> conferenceParticipants;
 
 
 

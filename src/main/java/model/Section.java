@@ -21,11 +21,11 @@ public class Section implements Serializable {
     private String sectionId;
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "conferenceIdFK")
-    private Conference conference;
-
     @OneToMany(mappedBy = "section")
     private Set<SectionParticipant> sectionParticipants;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "scheduleIdFK")
+    private Schedule schedule;
 
 }

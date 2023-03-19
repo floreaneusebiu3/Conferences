@@ -23,12 +23,40 @@ public class LoginView implements ILoginView{
     private JButton enterAsGuestButton;
     private LoginPresenter loginPresenter;
 
-    public LoginView() {
+    public LoginView() throws IOException{
         loginPresenter = new LoginPresenter(this);
+        init();
     }
 
-    public void init() throws IOException {
+    @Override
+    public void updateOnSuccess() {
+        JOptionPane.showMessageDialog(frame, "Successfully logged in!");
+    }
 
+    @Override
+    public void updateOnFail() {
+        JOptionPane.showMessageDialog(frame, "The account does not exist. You can enter as guest!");
+    }
+
+    @Override
+    public void showUserInterface(User user) {
+        switch (user.getRole()) {
+            case "participant":
+                frame.dispose();
+                new ParticipantView(user);
+                break;
+            case "organizer":
+                frame.dispose();
+                new OrganizerView();
+                break;
+            case "admin":
+                frame.dispose();
+                new AdminView();
+                break;
+        }
+    }
+
+    private void init() throws IOException {
         frame = new JFrame("ConferencesLogin");
         frame.setSize(600, 300);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -72,7 +100,6 @@ public class LoginView implements ILoginView{
         enterAsGuestButton.setFont(new Font("Verdana", Font.BOLD, 20));
         enterAsGuestButton.setBackground(Color.BLACK);
 
-        frame.setVisible(true);
         frame.add(label);
         frame.add(usernameLabel);
         frame.add(passwordLabel);
@@ -80,38 +107,21 @@ public class LoginView implements ILoginView{
         frame.add(passwordTextField);
         frame.add(loginButton);
         frame.add(enterAsGuestButton);
+        frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loginPresenter.drawUserInterface(usernameTextField.getText(), passwordTextField.getText());
+                loginPresenter.checkUserIsRegistered(usernameTextField.getText(), passwordTextField.getText());
             }
         });
-    }
-
-    @Override
-    public void updateOnSuccess() {
-        JOptionPane.showMessageDialog(frame, "Successfully logged in!");
-    }
-
-    @Override
-    public void updateOnFail() {
-        JOptionPane.showMessageDialog(frame, "The account does not exist. You can enter as guest!");
-    }
-
-    @Override
-    public void showUserInterface(User user) {
-        switch (user.getRole()) {
-            case "participant":
-                new ParticipantView();
-                break;
-            case "organizer":
-                new OrganizerView();
-                break;
-            case "admin":
-                new AdminView();
-                break;
-        }
+        enterAsGuestButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new ParticipantView(null);
+            }
+        });
     }
 }

@@ -14,8 +14,6 @@
         <!-- DB schema will be updated if needed -->
         <property name="hibernate.hbm2ddl.auto">update</property>
         <mapping class="model.User" />
-        <mapping class="model.Conference" />
-        <mapping class="model.ConferenceParticipant" />
         <mapping class="model.Participant" />
         <mapping class="model.Schedule" />
         <mapping class="model.Section" />

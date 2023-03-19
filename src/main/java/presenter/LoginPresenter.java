@@ -7,14 +7,16 @@ import view.*;
 import java.util.List;
 
 public class LoginPresenter {
-    ILoginView loginView;
+    private ILoginView loginView;
+    private UserPersistence userPersistence;
 
     public LoginPresenter(ILoginView iLoginView) {
         this.loginView = iLoginView;
+        this.userPersistence = new UserPersistence();
     }
 
-    public void drawUserInterface(String userName, String password) {
-        List<User> users = (new UserPersistence()).readAll();
+    public void checkUserIsRegistered(String userName, String password) {
+        List<User> users = userPersistence.readAll();
         User user = getRegisteredUser(users, userName, password);
         if (user != null && user.getRole() != null && user.isApproved() == true) {
             loginView.updateOnSuccess();
@@ -25,8 +27,6 @@ public class LoginPresenter {
     }
 
     private User getRegisteredUser(List<User> users, String username, String password) {
-        System.out.println("username " + username);
-        System.out.println("password " + password);
         for (User user : users) {
             if (isValidUser(user) && user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return user;

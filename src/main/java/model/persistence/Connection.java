@@ -20,12 +20,12 @@ public class Connection {
     private Transaction transaction;
 
     public Connection() {
-        ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
-        meta = new MetadataSources(ssr).getMetadataBuilder().build();
-        sessionFactory = meta.getSessionFactoryBuilder().build();
     }
 
     public void startConnection() {
+        ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+        meta = new MetadataSources(ssr).getMetadataBuilder().build();
+        sessionFactory = meta.getSessionFactoryBuilder().build();
         session = sessionFactory.openSession();
         transaction = session.beginTransaction();
     }
