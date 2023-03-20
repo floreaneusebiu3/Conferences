@@ -5,8 +5,10 @@ import model.persistence.ParticipantPersistence;
 import model.persistence.PresentationFilePersistence;
 import model.persistence.SectionParticipantPersistence;
 import model.persistence.SectionPersistence;
+import view.IParticipantView;
 import view.ParticipantView;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.*;
 import java.util.List;
 
 public class ParticipantPresenter {
-    private ParticipantView participantView;
+    private IParticipantView participantView;
     private String selectedPresentationFile = null;
     private SectionPersistence sectionPersistence;
     private ParticipantPersistence participantPersistence;
@@ -29,39 +31,51 @@ public class ParticipantPresenter {
         this.participantView = participantView;
     }
 
-    public List<Section> getAllSectionsOfThisUser(User user) {
-        List<SectionParticipant> sectionParticipants = sectionParticipantPersistence.readAll();
-        List<Section> sections = new ArrayList<>();
-        for (SectionParticipant sectionParticipant : sectionParticipants) {
-            if (sectionParticipant.getParticipant().getName().equals(user.getFirstName())) {
-                System.out.println("************************************************************************");
-                System.out.println(sectionParticipant.getParticipant().getName());
-                System.out.println("************************************************************************");
-                System.out.println(user.getFirstName());
-                sections.add(sectionParticipant.getSection());
+    public void openFile() {
+        List<PresentationFile> files = presentationFilePersistence.readAll();
+        int selectedFile = participantView.getFilesTable().getSelectedRow();
+        if (selectedFile >= files.size() || selectedFile < 0) {
+            participantView.showMessage("You must select a file");
+            return;
+        }
+        PresentationFile presentationFile = files.get(selectedFile);
+        File file = new File(presentationFile.getFileAddress());
+        if (file.exists()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        return sections;
     }
 
-    private boolean isParticipantAtThisSection(User user, Set<Participant> participants) {
-        for (Participant participant : participants) {
-            if (user.getFirstName().equals(participant.getName())) {
-                return true;
-            }
+    public void createUser(User user) {
+        if (user != null) {
+            participantView.setLoggedUser(user);
+        } else {
+            participantView.setLoggedUser(new User());
+            participantView.getLoggedUser().setFirstName("Guest" + UUID.randomUUID());
         }
-        return false;
+    }
+
+    public void updateFilesTable() {
+        List<PresentationFile> presentationFiles = presentationFilePersistence.readAll();
+        int index = 0;
+        for (PresentationFile presentationFile : presentationFiles) {
+            participantView.getFilesData()[index][0] = presentationFile.getFileAddress();
+            participantView.getFilesData()[index][1] = presentationFile.getParticipant().getName();
+            participantView.getFilesData()[index++][2] = presentationFile.getSection().getName();
+        }
     }
 
     public void addParticipantToSection(User user, String sectionId) {
         if (selectedPresentationFile == null) {
-            participantView.showMessageMustSelectAFile();
+            participantView.showMessage("You have to upload a file before join a section of this conference");
             return;
         }
-
         Section section = sectionPersistence.getSectionById(sectionId);
         if (userIsParticipantAtThisSection(user, section)) {
-            participantView.showMessageAlreadyJoinedThisSection();
+            participantView.showMessage("You have already joined this section");
             return;
         }
         Participant participant = getParticipant(user);
@@ -69,8 +83,72 @@ public class ParticipantPresenter {
         PresentationFile presentationFile1 = getPresentationFile(section, selectedPresentationFile, participant);
         presentationFilePersistence.insert(presentationFile1);
         addSectionParticipantsRow(participant, section);
-        participantView.showAllSectionsOfThisParticipant();
+        showAllSectionsOfThisParticipant();
+    }
 
+    public void updateJoinedSections() {
+        List<Section> sectionList = getSectionsFromDataBase();
+        if (participantView.getSectionsTable().getSelectedRow() >= sectionList.size() || participantView.getSectionsTable().getSelectedRow() < 0) {
+            participantView.showMessage("You must select a section");
+            return;
+        }
+        addParticipantToSection(participantView.getLoggedUser(), sectionList.get(participantView.getSectionsTable().getSelectedRow()).getSectionId());
+    }
+
+    public void showAllSectionsOfThisParticipant() {
+        List<Section> sectionList = getAllSectionsOfThisUser(participantView.getLoggedUser());
+        int index = 0;
+        for (Section section : sectionList) {
+            participantView.getJoinedSectionsData()[index][0] = section.getName();
+            participantView.getJoinedSectionsData()[index][1] = section.getSchedule().getDate();
+            participantView.getJoinedSectionsData()[index][2] = section.getSchedule().getStartHour();
+            participantView.getJoinedSectionsData()[index++][3] = section.getSchedule().getEndHour();
+        }
+        participantView.getFrame().getContentPane().repaint();
+    }
+
+    public void setSelectedPresentationFile() {
+        JFileChooser jFileChooser = new JFileChooser("C:\\Users\\flore\\Desktop\\Conferences\\files");
+        int opened = jFileChooser.showSaveDialog(null);
+        if (opened == JFileChooser.APPROVE_OPTION) {
+        }
+        this.selectedPresentationFile = jFileChooser.getSelectedFile().getAbsolutePath();
+    }
+
+    public void getSectionsFromDataBaseAndUpdateTable() {
+        List<Section> sectionList = sectionPersistence.readAll();
+        int index = 0;
+        for (Section section : sectionList) {
+            participantView.getSectionsData()[index][0] = section.getName();
+            participantView.getSectionsData()[index][1] = section.getSchedule().getDate();
+            participantView.getSectionsData()[index][2] = section.getSchedule().getStartHour();
+            participantView.getSectionsData()[index++][3] = section.getSchedule().getEndHour();
+        }
+        participantView.getFrame().getContentPane().repaint();
+    }
+
+    public List<Section> getAllSectionsOfThisUser(User user) {
+        List<SectionParticipant> sectionParticipants = sectionParticipantPersistence.readAll();
+        List<Section> sections = new ArrayList<>();
+        for (SectionParticipant sectionParticipant : sectionParticipants) {
+            if (sectionParticipant.getParticipant().getName().equals(user.getFirstName())) {
+                sections.add(sectionParticipant.getSection());
+            }
+        }
+        return sections;
+    }
+
+    public PresentationFile getPresentationFile(Section section, String pathToFile, Participant participant) {
+        PresentationFile presentationFile = new PresentationFile();
+        presentationFile.setPresentationFileId(UUID.randomUUID().toString());
+        presentationFile.setFileAddress(pathToFile);
+        presentationFile.setParticipant(participant);
+        presentationFile.setSection(section);
+        return presentationFile;
+    }
+
+    public List<Section> getSectionsFromDataBase() {
+        return sectionPersistence.readAll();
     }
 
     private boolean userIsParticipantAtThisSection(User user, Section section) {
@@ -87,12 +165,7 @@ public class ParticipantPresenter {
         sectionParticipantPersistence.insert(sectionParticipant);
     }
 
-    public void getSectionsFromDataBaseAndUpdateTable() {
-       List<Section> sectionList = sectionPersistence.readAll();
-       participantView.updateSectionsTable(sectionList);
-    }
-
-    public SectionParticipant getSectionParticipant(Participant participant, Section section) {
+    private SectionParticipant getSectionParticipant(Participant participant, Section section) {
         return new SectionParticipant(UUID.randomUUID().toString(), participant, section);
     }
 
@@ -108,44 +181,4 @@ public class ParticipantPresenter {
         }
         return participant;
     }
-
-    public PresentationFile getPresentationFile(Section section, String pathToFile, Participant participant) {
-        PresentationFile presentationFile = new PresentationFile();
-        presentationFile.setPresentationFileId(UUID.randomUUID().toString());
-        presentationFile.setFileAddress(pathToFile);
-        presentationFile.setParticipant(participant);
-        presentationFile.setSection(section);
-        return presentationFile;
-    }
-
-    public void setSelectedPresentationFile(String selectedPresentationFile) {
-        this.selectedPresentationFile = selectedPresentationFile;
-    }
-
-    public List<Section> getSectionsFromDataBase() {
-        return sectionPersistence.readAll();
-    }
-
-    public void updateFilesTable() {
-        List<PresentationFile> presentationFiles = presentationFilePersistence.readAll();
-        participantView.showAllFiles(presentationFiles);
-    }
-
-    public void openFile() {
-        List<PresentationFile> files= presentationFilePersistence.readAll();
-        int selectedFile = participantView.getFilesTable().getSelectedRow();
-        if(selectedFile >= files.size() || selectedFile < 0) {
-            participantView.showMessageMustSelectAFileToBeOpened();
-        }
-        PresentationFile presentationFile = files.get(selectedFile);
-        File file = new File(presentationFile.getFileAddress());
-        if (file.exists()) {
-            try {
-                Desktop.getDesktop().open(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 }

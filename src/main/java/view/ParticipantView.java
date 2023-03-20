@@ -1,7 +1,6 @@
 package view;
 
-import model.PresentationFile;
-import model.Section;
+
 import model.User;
 import presenter.ParticipantPresenter;
 
@@ -10,9 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+
 
 public class ParticipantView implements IParticipantView {
     private JFrame frame;
@@ -40,14 +37,8 @@ public class ParticipantView implements IParticipantView {
     private JButton openFileButton;
 
     public ParticipantView(User user) {
-        if (user != null) {
-            this.loggedUser = user;
-        } else {
-            this.loggedUser = new User();
-            this.loggedUser.setFirstName("Guest" + UUID.randomUUID());
-        }
-
         participantPresenter = new ParticipantPresenter(this);
+        participantPresenter.createUser(user);
         try {
             init();
         } catch (IOException e) {
@@ -137,6 +128,11 @@ public class ParticipantView implements IParticipantView {
         openFileButton.setFont(new Font("Verdana", Font.BOLD, 20));
         volumePanel.add(openFileButton);
 
+        backButton = new JButton(new ImageIcon("img/back.png"));
+        backButton.setBounds(1500, 50, 40, 40);
+        backButton.setBackground(new Color(68, 68, 68));
+        volumePanel.add(backButton);
+
 
         frame.add(initPanel);
         frame.setVisible(true);
@@ -145,14 +141,14 @@ public class ParticipantView implements IParticipantView {
         uploadFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showExplorer();
+                participantPresenter.setSelectedPresentationFile();
             }
         });
 
         joinSectionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateJoinedSections();
+                participantPresenter.updateJoinedSections();
             }
         });
         seeConferenceVolumeButton.addActionListener(new ActionListener() {
@@ -173,86 +169,62 @@ public class ParticipantView implements IParticipantView {
                 participantPresenter.openFile();
             }
         });
-        updateSections();
-        showAllSectionsOfThisParticipant();
-    }
 
-    @Override
-    public void updateSections() {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.remove(volumePanel);
+                frame.add(initPanel);
+                frame.repaint();
+            }
+        });
         participantPresenter.getSectionsFromDataBaseAndUpdateTable();
+        participantPresenter.showAllSectionsOfThisParticipant();
+
     }
 
     @Override
-    public void updateJoinedSections() {
-        List<Section> sectionList = participantPresenter.getSectionsFromDataBase();
-        if (sectionsTable.getSelectedRow() >= sectionList.size() || sectionsTable.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(frame, "You must select a section");
-            return;
-        }
-        participantPresenter.addParticipantToSection(loggedUser, sectionList.get(sectionsTable.getSelectedRow()).getSectionId());
-    }
-
-    @Override
-    public void showExplorer() {
-        JFileChooser jFileChooser = new JFileChooser("C:\\Users\\flore\\Desktop\\Conferences\\files");
-        int opened = jFileChooser.showSaveDialog(null);
-        if (opened == JFileChooser.APPROVE_OPTION) {
-            participantPresenter.setSelectedPresentationFile(jFileChooser.getSelectedFile().getAbsolutePath());
-        }
-    }
-
-    @Override
-    public void showMessageMustSelectAFile() {
-        JOptionPane.showMessageDialog(frame, "You have to upload a file before join a section of this conference");
-    }
-
-    @Override
-    public void showAllSectionsOfThisParticipant() {
-        List<Section> sectionList = participantPresenter.getAllSectionsOfThisUser(loggedUser);
-        int index = 0;
-        for (Section section : sectionList) {
-            joinedSectionsData[index][0] = section.getName();
-            joinedSectionsData[index][1] = section.getSchedule().getDate();
-            joinedSectionsData[index][2] = section.getSchedule().getStartHour();
-            joinedSectionsData[index++][3] = section.getSchedule().getEndHour();
-        }
-        frame.getContentPane().repaint();
-    }
-
-    @Override
-    public void showMessageAlreadyJoinedThisSection() {
-        JOptionPane.showMessageDialog(frame, "You have already joined this section");
-    }
-
-    @Override
-    public void updateSectionsTable(List<Section> sectionList) {
-        int index = 0;
-        for (Section section : sectionList) {
-            sectionsData[index][0] = section.getName();
-            sectionsData[index][1] = section.getSchedule().getDate();
-            sectionsData[index][2] = section.getSchedule().getStartHour();
-            sectionsData[index++][3] = section.getSchedule().getEndHour();
-        }
-        frame.getContentPane().repaint();
-    }
-
-    @Override
-    public void showAllFiles(List<PresentationFile> presentationFiles) {
-        int index = 0;
-        for (PresentationFile presentationFile : presentationFiles) {
-            filesData[index][0] = presentationFile.getFileAddress();
-            filesData[index][1] = presentationFile.getParticipant().getName();
-            filesData[index++][2] = presentationFile.getSection().getName();
-        }
-    }
-
-    @Override
-    public void showMessageMustSelectAFileToBeOpened() {
-        JOptionPane.showMessageDialog(frame, "You must select a file");
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(frame, message);
     }
 
     @Override
     public JTable getFilesTable() {
         return filesTable;
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    @Override
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+
+    @Override
+    public void setLoggedUser(User loggedUser) {
+        this.loggedUser = loggedUser;
+    }
+
+    @Override
+    public Object[][] getFilesData() {
+        return filesData;
+    }
+
+    @Override
+    public Object[][] getJoinedSectionsData() {
+        return joinedSectionsData;
+    }
+
+    @Override
+    public JTable getSectionsTable() {
+        return sectionsTable;
+    }
+
+    @Override
+    public Object[][] getSectionsData() {
+        return sectionsData;
     }
 }
