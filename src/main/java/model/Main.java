@@ -1,7 +1,9 @@
 package model;
 
 import model.persistence.*;
+import org.mockito.internal.matchers.Or;
 import view.LoginView;
+import view.OrganizerView;
 import view.ParticipantView;
 
 import java.io.IOException;
@@ -22,12 +24,13 @@ public class Main {
         Section section = new Section(UUID.randomUUID().toString(), "History", null, schedule);
         (new SectionPersistence()).insert(section);*/
        // ParticipantView participantView = new ParticipantView(null);
-        LoginView loginView = new LoginView();
+       // LoginView loginView = new LoginView();
 //        Connection connection = new Connection();
 //        connection.startConnection();
 //        connection.stopConnection();
 /*        SectionPersistence sectionPersistence = new SectionPersistence();
         sectionPersistence.readAll();
         sectionPersistence.readAll();*/
+        OrganizerView organizerView = new OrganizerView();
     }
 }

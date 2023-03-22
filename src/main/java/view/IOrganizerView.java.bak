@@ -12,9 +12,5 @@ public interface IOrganizerView {
 	public JTextField getSectionTextField();
 	public void updateFilteredParticipantsTable(Object[][] data, List<Participant> participants);
 	public Object[][] getFilteredParticipantsData(); 
-	    public void clearFilteredTable();
-		    public void clearParticipantsFilesTable();
-
-
 
 }
