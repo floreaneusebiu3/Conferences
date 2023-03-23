@@ -24,8 +24,7 @@ public class PresentationFile implements Serializable {
     @JoinColumn(name = "participantIdFK")
     private Participant participant;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "sectionIdFK")
     private Section section;
-
 }

@@ -39,4 +39,6 @@ public class ParticipantPersistence extends AbstractPersistence<Participant>{
         session.close();
         return presentationFilesAsList;
     }
+
+
 }

@@ -25,7 +25,7 @@ public class LoginView implements ILoginView{
 
     public LoginView() throws IOException{
         loginPresenter = new LoginPresenter(this);
-        init();
+        initLogin();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class LoginView implements ILoginView{
         }
     }
 
-    private void init() throws IOException {
+    private void initLogin() throws IOException {
         frame = new JFrame("ConferencesLogin");
         frame.setSize(600, 300);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();

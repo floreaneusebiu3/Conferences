@@ -22,7 +22,7 @@ public class Participant implements Serializable {
     private String name;
     private boolean registered;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "userIdFK")
     private User user;
 
@@ -31,10 +31,4 @@ public class Participant implements Serializable {
 
     @OneToMany(mappedBy = "participant")
     private Set<SectionParticipant> sectionParticipants;
-
-
-
-
-
-
 }

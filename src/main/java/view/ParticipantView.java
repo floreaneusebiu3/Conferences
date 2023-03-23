@@ -40,13 +40,13 @@ public class ParticipantView implements IParticipantView {
         participantPresenter = new ParticipantPresenter(this);
         participantPresenter.createUser(user);
         try {
-            init();
+            initParticipantView();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void init() throws IOException {
+    private void initParticipantView() throws IOException {
         frame = new JFrame("Participant");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -180,6 +180,7 @@ public class ParticipantView implements IParticipantView {
         });
         participantPresenter.getSectionsFromDataBaseAndUpdateTable();
         participantPresenter.showAllSectionsOfThisParticipant();
+        frame.repaint();
 
     }
 

@@ -2,10 +2,7 @@ package model.persistence;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -13,28 +10,25 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 @Setter
 @Getter
 public class Connection {
-    private StandardServiceRegistry ssr;
-    private Metadata meta;
-    private SessionFactory sessionFactory;
-    private Session session;
-    private Transaction transaction;
+    private static SessionFactory sessionFactory;
 
-    public Connection() {
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+
+                StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().configure().build();
+                sessionFactory = new MetadataSources(serviceRegistry)
+                        .buildMetadata().buildSessionFactory();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return sessionFactory;
     }
 
-    public void startConnection() {
-        ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
-        meta = new MetadataSources(ssr).getMetadataBuilder().build();
-        sessionFactory = meta.getSessionFactoryBuilder().build();
-        session = sessionFactory.openSession();
-        transaction = session.beginTransaction();
+    public static void setSessionFactory(SessionFactory sessionFactory) {
+        Connection.sessionFactory = sessionFactory;
     }
-
-    public void stopConnection() {
-        transaction.commit();
-        sessionFactory.close();
-        session.close();
-    }
-
 
 }

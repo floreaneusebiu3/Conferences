@@ -27,5 +27,4 @@ public class Section implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduleIdFK")
     private Schedule schedule;
-
 }

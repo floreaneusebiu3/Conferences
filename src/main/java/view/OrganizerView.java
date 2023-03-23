@@ -2,6 +2,7 @@ package view;
 
 import model.Participant;
 import model.PresentationFile;
+import model.persistence.PresentationFilePersistence;
 import presenter.OrganizerPresenter;
 
 import javax.swing.*;
@@ -12,14 +13,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.List;
 
-public class OrganizerView implements IOrganizerView{
+public class OrganizerView implements IOrganizerView {
     private JFrame frame;
     private JPanel initialPanel;
     private JTable participantsFilesTable;
-    private String[] participantsFilesHead = {"PARTICIPANT", "REGISTERED", "FILE"};
-    private Object[][] participantsFilesData = new Object[100][3];
+    private String[] participantsFilesHead = {"PARTICIPANT", "REGISTERED", "FILE", "SECTION"};
+    private Object[][] participantsFilesData = new Object[100][4];
     private JTable filteredParticipants;
-    private String[] filteredParticipantsHead = {"PARTICIPANT", "SECTION", };
+    private String[] filteredParticipantsHead = {"PARTICIPANT", "SECTION",};
     private Object[][] filteredParticipantsData = new Object[100][3];
     private JTextField sectionTextField;
     private JButton filterButton;
@@ -30,11 +31,11 @@ public class OrganizerView implements IOrganizerView{
 
     public OrganizerView() {
         this.organizerPresenter = new OrganizerPresenter(this);
-        init();
+        initOrganizerView();
     }
 
-    private void init() {
-        frame = new JFrame("Participant");
+    private void initOrganizerView() {
+        frame = new JFrame("Organizer");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
@@ -113,9 +114,30 @@ public class OrganizerView implements IOrganizerView{
         filterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clearFilteredTable();
                 organizerPresenter.updateFilteredTable();
                 frame.repaint();
+            }
+        });
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                organizerPresenter.updateParticipantAndFile();
+                organizerPresenter.updateParticipantsFilesTable();
+            }
+        });
+        insertButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                organizerPresenter.insertParticipantAndFile();
+                organizerPresenter.updateParticipantsFilesTable();
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                organizerPresenter.deleteParticipantAndFile();
+                organizerPresenter.updateParticipantsFilesTable();
             }
         });
 
@@ -123,11 +145,16 @@ public class OrganizerView implements IOrganizerView{
 
     @Override
     public void updateParticipantsFilesTable(Object[][] data, List<Participant> participants, List<PresentationFile> presentationFiles) {
-        for (int index = 0; index < participants.size(); index++) {
-            data[index][0] = participants.get(index).getName();
-            data[index][1] = participants.get(index).isRegistered();
-            data[index][2] = presentationFiles.get(index).getFileAddress();
+        int index = 0;
+        for (Participant participant : participants) {
+            data[index][0] = participant.getName();
+            data[index++][1] = participant.isRegistered();
+            for (PresentationFile presentationFile : (new PresentationFilePersistence()).getPresentationsFileForThisParticipant(participant)) {
+                data[index][2] = presentationFile.getFileAddress();
+                data[index++][3] = presentationFile.getSection().getName();
+            }
         }
+        frame.repaint();
     }
 
     @Override
@@ -156,7 +183,7 @@ public class OrganizerView implements IOrganizerView{
 
     @Override
     public void clearFilteredTable() {
-        for (int i = 0; i <100; i++) {
+        for (int i = 0; i < 100; i++) {
             filteredParticipantsData[i][0] = "";
             filteredParticipantsData[i][1] = "";
         }
@@ -164,10 +191,21 @@ public class OrganizerView implements IOrganizerView{
 
     @Override
     public void clearParticipantsFilesTable() {
-        for (int i = 0; i <100; i++) {
+        for (int i = 0; i < 100; i++) {
             participantsFilesData[i][0] = "";
             participantsFilesData[i][1] = "";
             participantsFilesData[i][2] = "";
+            participantsFilesData[i][3] = "";
         }
+    }
+
+    @Override
+    public JTable getParticipantsFilesTable() {
+        return participantsFilesTable;
+    }
+
+    @Override
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(frame, message);
     }
 }

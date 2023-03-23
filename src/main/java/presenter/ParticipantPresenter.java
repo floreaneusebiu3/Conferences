@@ -17,11 +17,11 @@ import java.util.List;
 
 public class ParticipantPresenter {
     private IParticipantView participantView;
-    private String selectedPresentationFile = null;
     private SectionPersistence sectionPersistence;
     private ParticipantPersistence participantPersistence;
     private SectionParticipantPersistence sectionParticipantPersistence;
     private PresentationFilePersistence presentationFilePersistence;
+    private String selectedPresentationFile = null;
 
     public ParticipantPresenter(ParticipantView participantView) {
         presentationFilePersistence = new PresentationFilePersistence();
@@ -79,7 +79,6 @@ public class ParticipantPresenter {
             return;
         }
         Participant participant = getParticipant(user);
-        participantPersistence.insert(participant);
         PresentationFile presentationFile1 = getPresentationFile(section, selectedPresentationFile, participant);
         presentationFilePersistence.insert(presentationFile1);
         addSectionParticipantsRow(participant, section);
@@ -170,6 +169,11 @@ public class ParticipantPresenter {
     }
 
     private Participant getParticipant(User user) {
+        List<Participant> participants = participantPersistence.readAll();
+        for(Participant participant : participants) {
+            if (participant.getName().equals(user.getFirstName()))
+                return participant;
+        }
         Participant participant = new Participant();
         participant.setName(user.getFirstName());
         participant.setParticipantId(UUID.randomUUID().toString());
@@ -179,6 +183,7 @@ public class ParticipantPresenter {
             participant.setRegistered(false);
             participant.setUser(null);
         }
+        participantPersistence.insert(participant);
         return participant;
     }
 }
