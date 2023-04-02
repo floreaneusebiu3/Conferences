@@ -1,16 +1,9 @@
 package model;
 
-import lombok.extern.java.Log;
-import model.persistence.*;
-import view.AdminView;
 import view.LoginView;
-import view.OrganizerView;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.UUID;
+
 
 public class Main {
     public static void main(String[] args) throws IOException {

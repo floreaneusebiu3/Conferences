@@ -70,13 +70,10 @@ public class AbstractPersistence<T> {
     public List<T> readAll() {
         Class<T> type = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
-        StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
-        Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
-        SessionFactory factory = meta.getSessionFactoryBuilder().build();
-        Session session = factory.openSession();
+        Session session = Connection.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         Query q=session.createQuery("from "+type.getName());
         List<T> lista= q.getResultList();
-        factory.close();
         session.close();
         return lista;
     }

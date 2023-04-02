@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +26,6 @@ public class CrudTest {
     private Session mockSession;
     @Mock
     private Transaction mockTransaction;
-    @Mock
-    private Query<Participant> query;
     @Before
     public void setUp() {
         Mockito.when(mockSession.beginTransaction()).thenReturn(mockTransaction);
@@ -75,12 +74,19 @@ public class CrudTest {
     }
 
     @Test
-    public void testReadAllShouldReturnNotNullListOfParticipants() {
-        List<Participant> participants = participantPersistence.readAll();
+    public void testReadAllShouldShouldReturnExpectedListAndCloseTheConnection() {
+        Query<Participant> query = mock(Query.class);
+        List<Participant> expectedList = new ArrayList<>();
+        when(query.getResultList()).thenReturn(expectedList);
+        when(mockSession.createQuery(anyString())).thenReturn(query);
+        Connection.setSessionFactory(mock(SessionFactory.class));
+        when(Connection.getSessionFactory().openSession()).thenReturn(mockSession);
 
-        boolean expectedResult = true;
+        List<Participant> actualList = participantPersistence.readAll();
 
-        Assert.assertNotNull(participants);
-        Assert.assertEquals(participants.size()>0, expectedResult);
+        verify(mockSession).close();
+        verify(mockSession).createQuery(eq("from model.Participant"));
+        verify(query).getResultList();
+        Assert.assertEquals(expectedList, actualList);
     }
 }

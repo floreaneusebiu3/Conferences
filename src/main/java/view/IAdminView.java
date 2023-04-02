@@ -17,6 +17,4 @@ public interface IAdminView {
     JFrame getFrame();
 
     void showMessage(String message);
-
-
 }

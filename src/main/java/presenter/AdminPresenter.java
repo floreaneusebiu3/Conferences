@@ -2,7 +2,6 @@ package presenter;
 
 import model.User;
 import model.persistence.UserPersistence;
-import view.AdminView;
 import view.IAdminView;
 
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.OverlappingFileLockException;
 
 public class LoginView implements ILoginView{
     private JFrame frame;
@@ -26,34 +27,6 @@ public class LoginView implements ILoginView{
     public LoginView() throws IOException{
         loginPresenter = new LoginPresenter(this);
         initLogin();
-    }
-
-    @Override
-    public void updateOnSuccess() {
-        JOptionPane.showMessageDialog(frame, "Successfully logged in!");
-    }
-
-    @Override
-    public void updateOnFail() {
-        JOptionPane.showMessageDialog(frame, "The account does not exist. You can enter as guest!");
-    }
-
-    @Override
-    public void showUserInterface(User user) {
-        switch (user.getRole()) {
-            case "participant":
-                frame.dispose();
-                new ParticipantView(user);
-                break;
-            case "organizer":
-                frame.dispose();
-                new OrganizerView();
-                break;
-            case "admin":
-                frame.dispose();
-                new AdminView();
-                break;
-        }
     }
 
     private void initLogin() throws IOException {
@@ -123,5 +96,20 @@ public class LoginView implements ILoginView{
                 new ParticipantView(null);
             }
         });
+    }
+
+    @Override
+    public void updateOnSuccess() {
+        JOptionPane.showMessageDialog(frame, "Successfully logged in!");
+    }
+
+    @Override
+    public void updateOnFail() {
+        JOptionPane.showMessageDialog(frame, "The account does not exist. You can enter as guest!");
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return frame;
     }
 }

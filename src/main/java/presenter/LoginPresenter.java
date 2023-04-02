@@ -20,9 +20,26 @@ public class LoginPresenter {
         User user = getRegisteredUser(users, userName, password);
         if (user != null && user.getRole() != null && user.isApproved() == true) {
             loginView.updateOnSuccess();
-            loginView.showUserInterface(user);
+            chooseUserInterface(user);
         } else {
             loginView.updateOnFail();
+        }
+    }
+
+    public void chooseUserInterface(User user) {
+        switch (user.getRole()) {
+            case "participant":
+                loginView.getFrame().dispose();
+                new ParticipantView(user);
+                break;
+            case "organizer":
+                loginView.getFrame().dispose();
+                new OrganizerView();
+                break;
+            case "admin":
+                loginView.getFrame().dispose();
+                new AdminView();
+                break;
         }
     }
 
