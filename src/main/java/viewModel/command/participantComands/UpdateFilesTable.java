@@ -1,13 +1,14 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.PresentationFile;
 import model.persistence.PresentationFilePersistence;
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateFilesTable implements Command{
+public class UpdateFilesTable implements Command {
     private VMParticipant vmParticipant;
 
     public UpdateFilesTable(VMParticipant vmParticipant) {

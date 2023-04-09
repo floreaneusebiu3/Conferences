@@ -1,4 +1,4 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.*;
 import model.persistence.ParticipantPersistence;
@@ -6,9 +6,11 @@ import model.persistence.PresentationFilePersistence;
 import model.persistence.SectionParticipantPersistence;
 import model.persistence.SectionPersistence;
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class JoinSectionCommand implements Command {
@@ -58,11 +60,18 @@ public class JoinSectionCommand implements Command {
         Participant participant = new Participant();
         participant.setName(user.getFirstName());
         participant.setParticipantId(UUID.randomUUID().toString());
-        participant.setRegistered(true);
         participant.setUser(user);
+        participant.setRegistered(false);
         if (user.getUserId() == null) {
-            participant.setRegistered(false);
-            participant.setUser(null);
+            User newUser = new User();
+            newUser.setUserId(UUID.randomUUID().toString());
+            newUser.setMail(user.getMail());
+            newUser.setRole("participant");
+            newUser.setUsername("user" + new Random().nextInt(1000));
+            newUser.setPassword("password" + new Random().nextInt(1000));
+            newUser.setAge(0);
+            newUser.setApproved(false);
+            participant.setUser(user);
         }
         (new ParticipantPersistence()).insert(participant);
         return participant;

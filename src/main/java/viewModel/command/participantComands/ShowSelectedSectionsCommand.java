@@ -1,15 +1,16 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.Section;
 import model.SectionParticipant;
 import model.User;
 import model.persistence.SectionParticipantPersistence;
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShowSelectedSectionsCommand implements Command{
+public class ShowSelectedSectionsCommand implements Command {
     private VMParticipant vmParticipant;
 
     public ShowSelectedSectionsCommand(VMParticipant vmParticipant) {

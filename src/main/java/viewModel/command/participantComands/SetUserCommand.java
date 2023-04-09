@@ -1,4 +1,4 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.User;
 import viewModel.VMParticipant;

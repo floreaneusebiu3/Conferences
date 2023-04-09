@@ -1,8 +1,5 @@
 package model;
 
-import model.persistence.UserPersistence;
-import view.ParticipantView;
-import viewModel.command.LoginCommand;
 import view.LoginView;
 
 import java.io.IOException;

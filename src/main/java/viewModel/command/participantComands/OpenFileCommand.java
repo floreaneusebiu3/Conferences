@@ -1,8 +1,9 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.PresentationFile;
 import model.persistence.PresentationFilePersistence;
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class OpenFileCommand implements Command{
+public class OpenFileCommand implements Command {
     private VMParticipant vmParticipant;
 
     public OpenFileCommand(VMParticipant vmParticipant) {

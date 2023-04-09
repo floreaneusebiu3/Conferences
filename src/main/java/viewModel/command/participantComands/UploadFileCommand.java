@@ -1,10 +1,11 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import javax.swing.*;
 
-public class UploadFileCommand implements Command{
+public class UploadFileCommand implements Command {
     private VMParticipant vmParticipant;
 
     public UploadFileCommand(VMParticipant vmParticipant) {

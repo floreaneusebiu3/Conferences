@@ -5,8 +5,8 @@ import lombok.Setter;
 import net.sds.mvvm.properties.Property;
 import net.sds.mvvm.properties.PropertyFactory;
 import viewModel.command.Command;
-import viewModel.command.LoginAsGuestCommand;
-import viewModel.command.LoginCommand;
+import viewModel.command.loginComands.LoginAsGuestCommand;
+import viewModel.command.loginComands.LoginCommand;
 @Setter
 @Getter
 public class VMLogin {

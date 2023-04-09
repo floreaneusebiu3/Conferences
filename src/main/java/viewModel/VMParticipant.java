@@ -7,6 +7,8 @@ import model.User;
 import net.sds.mvvm.properties.Property;
 import net.sds.mvvm.properties.PropertyFactory;
 import viewModel.command.*;
+import viewModel.command.participantComands.*;
+
 import java.util.List;
 
 @Setter

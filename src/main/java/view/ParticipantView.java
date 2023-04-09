@@ -153,7 +153,7 @@ public class ParticipantView {
         seeConferenceVolumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (vmParticipant.getLoggedUser().getUserId() != null) {
+                if (vmParticipant.getLoggedUser().isApproved()) {
                     frame.remove(initPanel);
                     frame.add(volumePanel);
                     vmParticipant.getUpdateFilesTableCommand().execute();

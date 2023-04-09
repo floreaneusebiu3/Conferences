@@ -1,4 +1,4 @@
-package viewModel.command;
+package viewModel.command.loginComands;
 
 import model.User;
 import model.persistence.UserPersistence;
@@ -6,10 +6,11 @@ import view.AdminView;
 import view.OrganizerView;
 import view.ParticipantView;
 import viewModel.VMLogin;
+import viewModel.command.Command;
 
 import java.util.List;
 
-public class LoginCommand implements Command{
+public class LoginCommand implements Command {
 
     private VMLogin vmLogin;
 

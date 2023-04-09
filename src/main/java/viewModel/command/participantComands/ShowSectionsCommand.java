@@ -1,8 +1,9 @@
-package viewModel.command;
+package viewModel.command.participantComands;
 
 import model.Section;
 import model.persistence.SectionPersistence;
 import viewModel.VMParticipant;
+import viewModel.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;

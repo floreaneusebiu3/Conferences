@@ -1,10 +1,11 @@
-package viewModel.command;
+package viewModel.command.loginComands;
 
 import model.User;
 import view.ParticipantView;
 import viewModel.VMLogin;
+import viewModel.command.Command;
 
-public class LoginAsGuestCommand implements Command{
+public class LoginAsGuestCommand implements Command {
     private VMLogin vmLogin;
 
     public LoginAsGuestCommand(VMLogin vmLogin) {
