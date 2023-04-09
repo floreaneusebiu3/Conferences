@@ -1,5 +1,6 @@
 package viewModel.command;
 
+import model.User;
 import view.ParticipantView;
 import viewModel.VMLogin;
 
@@ -12,7 +13,9 @@ public class LoginAsGuestCommand implements Command{
 
     @Override
     public void execute() {
-         new ParticipantView(null);
+        User user = new User();
+        user.setMail(vmLogin.getMailField().get());
+         new ParticipantView(user);
     }
 
 }

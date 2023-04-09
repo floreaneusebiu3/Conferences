@@ -8,18 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.UUID;
 
 public class ParticipantView {
     private JFrame frame;
     private JPanel initPanel;
-    private String[] sectionsHead = {"SECTION", "DATA", "START HOUR", "END HOUR"};
-    private Object[][] sectionsData = new Object[100][4];
-    @BindValues({@Bind(value = "model", target = "sectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRow.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable sectionsTable;
-    private JTable joinedSectionsTable;
-    private Object[][] joinedSectionsData = new Object[100][4];
     private JLabel sectionsTableTitle;
     private JLabel joinedSectionsTitle;
     private JLabel registeredCondition;
@@ -27,23 +19,23 @@ public class ParticipantView {
     private JButton seeConferenceVolumeButton;
     private JButton uploadFileButton;
     private Icon icon;
-    private User loggedUser;
-    private JTable filesTable;
-    private Object[][] filesData = new Object[100][3];
-    private String[] filesHead = {"FILE", "PARTICIPANT", "SECTION"};
     private JPanel volumePanel;
     private JButton backButton;
     private JButton openFileButton;
     private VMParticipant vmParticipant;
+    @BindValues({@Bind(value = "model", target = "sectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
+            @Bind(value = "selectedRow", target = "selectedRow.value", type = BindingType.BI_DIRECTIONAL)})
+    private JTable sectionsTable;
+    @BindValues({@Bind(value = "model", target = "joinedSectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
+            @Bind(value = "selectedRow", target = "selectedRowFromJoinedSections.value", type = BindingType.BI_DIRECTIONAL)})
+    private JTable joinedSectionsTable;
+    @BindValues({@Bind(value = "model", target = "filesTable.value", type = BindingType.TARGET_TO_SOURCE),
+            @Bind(value = "selectedRow", target = "selectedRowFromFilesTable.value", type = BindingType.BI_DIRECTIONAL)})
+    private JTable filesTable;
 
     public ParticipantView(User user) {
         vmParticipant = new VMParticipant();
-        if (user != null) {
-            loggedUser = user;
-        } else {
-            loggedUser = new User();
-            loggedUser.setFirstName("Guest" + UUID.randomUUID());
-        }
+        vmParticipant.getSetUserCommand().execute(user);
         frame = new JFrame("Participant");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -81,7 +73,7 @@ public class ParticipantView {
         scrollPane.setBounds(50, 100, 700, 600);
         initPanel.add(scrollPane);
 
-        joinedSectionsTable = new JTable(joinedSectionsData, sectionsHead);
+        joinedSectionsTable = new JTable();
         JScrollPane scrollPane1 = new JScrollPane(joinedSectionsTable);
         scrollPane1.setBounds(800, 100, 700, 600);
         initPanel.add(scrollPane1);
@@ -112,7 +104,7 @@ public class ParticipantView {
         uploadFileButton.setBounds(210, 720, 50, 50);
         initPanel.add(uploadFileButton);
 
-        filesTable = new JTable(filesData, filesHead);
+        filesTable = new JTable();
         JScrollPane scrollPane2 = new JScrollPane(filesTable);
         scrollPane2.setBounds(100, 50, 1300, 700);
         volumePanel.add(scrollPane2);
@@ -136,6 +128,7 @@ public class ParticipantView {
             e.printStackTrace();
         }
         vmParticipant.getShowSectionsCommand().execute();
+        vmParticipant.getShowSelectedSectionsCommand().execute();
         System.out.println(sectionsTable.getModel().getValueAt(0, 2));
 
         frame.add(initPanel);
@@ -145,35 +138,34 @@ public class ParticipantView {
         uploadFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                    participantPresenter.setSelectedPresentationFile();
+                vmParticipant.getUploadFileCommand().execute();
             }
         });
 
         joinSectionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                    participantPresenter.updateJoinedSections();
                 vmParticipant.getJoinSectionCommand().execute();
-                vmParticipant.getShowSectionsCommand().execute();
+                vmParticipant.getShowSelectedSectionsCommand().execute();
                 frame.repaint();
             }
         });
         seeConferenceVolumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-/*                    if (loggedUser.getUserId() != null) {
-                        frame.remove(initPanel);
-                        frame.add(volumePanel);
-                        participantPresenter.updateFilesTable();
-                        frame.repaint();
-                    }*/
+                if (vmParticipant.getLoggedUser().getUserId() != null) {
+                    frame.remove(initPanel);
+                    frame.add(volumePanel);
+                    vmParticipant.getUpdateFilesTableCommand().execute();
+                    frame.repaint();
+                }
             }
         });
 
         openFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //participantPresenter.openFile();
+                vmParticipant.getOpenFileCommand().execute();
             }
         });
 
@@ -186,11 +178,4 @@ public class ParticipantView {
             }
         });
     }
-
-/*        private void initParticipantView() throws IOException {
-            participantPresenter.getSectionsFromDataBaseAndUpdateTable();
-            participantPresenter.showAllSectionsOfThisParticipant();
-            frame.repaint();
-        }*/
-
 }

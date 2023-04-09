@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,8 @@ public class LoginView {
     private JTextField usernameTextField;
     @Bind(value = "text", target = "passwordField.value", type = BindingType.BI_DIRECTIONAL)
     private JPasswordField passwordTextField;
+    @Bind(value = "text", target = "mailField.value", type = BindingType.BI_DIRECTIONAL)
+    private JTextField mailField;
     private JButton loginButton;
     private JButton enterAsGuestButton;
     private VMLogin vm;
@@ -66,12 +70,18 @@ public class LoginView {
         loginButton.setFont(new Font("Verdana", Font.BOLD, 20));
         loginButton.setBackground(Color.BLACK);
 
+        mailField = new JTextField("mail:");
+        mailField.setForeground(Color.gray);
+        mailField.setBounds(50, 210, 220, 30 );
+        mailField.setFont(new Font("Verdana", Font.BOLD, 20));
+
         enterAsGuestButton = new JButton("ENTER AS GUEST");
-        enterAsGuestButton.setBounds(290, 190, 230, 30);
+        enterAsGuestButton.setBounds(290, 210, 230, 30);
         enterAsGuestButton.setForeground(Color.WHITE);
         enterAsGuestButton.setFont(new Font("Verdana", Font.BOLD, 20));
         enterAsGuestButton.setBackground(Color.BLACK);
 
+        frame.add(mailField);
         frame.add(label);
         frame.add(usernameLabel);
         frame.add(passwordLabel);
@@ -104,6 +114,23 @@ public class LoginView {
         catch (Exception ex){
             ex.printStackTrace();
         }
+        mailField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (mailField.getText().equals("mail:")) {
+                    mailField.setForeground(Color.black);
+                    mailField.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (mailField.getText().isEmpty()) {
+                    mailField.setForeground(Color.gray);
+                    mailField.setText("mail:");
+                }
+            }
+        });
     }
 }
 

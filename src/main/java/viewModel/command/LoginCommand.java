@@ -19,8 +19,8 @@ public class LoginCommand implements Command{
 
     @Override
     public void execute() {
-        String userName = vmLogin.getUserField();
-        String password = vmLogin.getPasswordField();
+        String userName = vmLogin.getUserField().get();
+        String password = vmLogin.getPasswordField().get();
         List<User> users = (new UserPersistence()).readAll();
         User user = getRegisteredUser(users, userName, password);
         if (user != null && user.getRole() != null && user.isApproved() == true) {
