@@ -27,4 +27,14 @@ public class Section implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scheduleIdFK")
     private Schedule schedule;
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "sectionId='" + sectionId + '\'' +
+                ", name='" + name + '\'' +
+                ", sectionParticipants=" + sectionParticipants +
+                ", schedule=" + schedule +
+                '}';
+    }
 }

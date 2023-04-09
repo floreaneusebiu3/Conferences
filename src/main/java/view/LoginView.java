@@ -89,7 +89,6 @@ public class LoginView {
             public void actionPerformed(ActionEvent e) {
                 vm.getLoginCommand().execute();
                 frame.dispose();
-                //loginPresenter.checkUserIsRegistered(usernameTextField.getText(), passwordTextField.getText());
             }
         });
         enterAsGuestButton.addActionListener(new ActionListener() {
@@ -97,8 +96,6 @@ public class LoginView {
             public void actionPerformed(ActionEvent e) {
                 vm.getLoginAsGuestCommand().execute();
                 frame.dispose();
-                /*frame.dispose();
-                new ParticipantView(null);*/
             }
         });
         try {
@@ -107,10 +104,6 @@ public class LoginView {
         catch (Exception ex){
             ex.printStackTrace();
         }
-    }
-
-    public VMLogin getVm() {
-        return vm;
     }
 }
 

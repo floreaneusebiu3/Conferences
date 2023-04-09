@@ -1,7 +1,6 @@
 package model;
 
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +42,10 @@ public class MyTable extends DefaultTableModel {
         } else {
             return "";
         }
+    }
+
+    public void clearData() {
+        this.records.clear();
     }
 
     public HashMap<Integer, List<String>> getRecords() {

@@ -15,8 +15,9 @@ public class ParticipantView {
     private JPanel initPanel;
     private String[] sectionsHead = {"SECTION", "DATA", "START HOUR", "END HOUR"};
     private Object[][] sectionsData = new Object[100][4];
-    @BindValues({@Bind(value = "model", target = "model.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "row.value", type = BindingType.BI_DIRECTIONAL)})    private JTable sectionsTable = new JTable(sectionsData, sectionsHead);
+    @BindValues({@Bind(value = "model", target = "sectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
+            @Bind(value = "selectedRow", target = "selectedRow.value", type = BindingType.BI_DIRECTIONAL)})
+    private JTable sectionsTable;
     private JTable joinedSectionsTable;
     private Object[][] joinedSectionsData = new Object[100][4];
     private JLabel sectionsTableTitle;
@@ -73,7 +74,7 @@ public class ParticipantView {
         joinedSectionsTitle.setForeground(Color.WHITE);
         joinedSectionsTitle.setFont(new Font("Verdana", Font.BOLD, 30));
         initPanel.add(joinedSectionsTitle);
-
+        sectionsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(sectionsTable);
         scrollPane.setBackground(Color.GRAY);
         scrollPane.setForeground(Color.WHITE);
@@ -128,13 +129,14 @@ public class ParticipantView {
         backButton.setBackground(new Color(68, 68, 68));
         volumePanel.add(backButton);
 
-        vmParticipant.getShowSectionsCommand().execute();
 
         try {
             Binder.bind(this, vmParticipant);
         } catch (BindingException e) {
             e.printStackTrace();
         }
+        vmParticipant.getShowSectionsCommand().execute();
+        System.out.println(sectionsTable.getModel().getValueAt(0, 2));
 
         frame.add(initPanel);
         frame.setVisible(true);
@@ -151,6 +153,9 @@ public class ParticipantView {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                    participantPresenter.updateJoinedSections();
+                vmParticipant.getJoinSectionCommand().execute();
+                vmParticipant.getShowSectionsCommand().execute();
+                frame.repaint();
             }
         });
         seeConferenceVolumeButton.addActionListener(new ActionListener() {

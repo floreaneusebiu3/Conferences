@@ -16,6 +16,7 @@ public class ShowSectionsCommand implements Command {
 
     @Override
     public void execute() {
+        vmParticipant.getSectionsTable().get().clearData();
         List<Section> sections = (new SectionPersistence()).readAll();
         System.out.println(sections.size());
         List<String> row;
@@ -25,7 +26,7 @@ public class ShowSectionsCommand implements Command {
             row.add(section.getSchedule().getDate().toString());
             row.add(String.valueOf(section.getSchedule().getStartHour()));
             row.add(String.valueOf(section.getSchedule().getEndHour()));
-            vmParticipant.getModel().get().add(row);
+            vmParticipant.getSectionsTable().get().add(row);
         }
     }
 }
