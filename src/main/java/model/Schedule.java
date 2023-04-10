@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -25,5 +22,9 @@ public class Schedule implements Serializable {
     private LocalDate date;
     private int startHour;
     private int endHour;
+
+    @ManyToOne
+    @JoinColumn(name = "sectionIdFK")
+    private Section section;
 
 }

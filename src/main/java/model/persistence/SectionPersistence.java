@@ -1,9 +1,13 @@
 package model.persistence;
 
-import model.Participant;
-import model.PresentationFile;
-import model.Section;
-import model.SectionParticipant;
+import model.*;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,5 +22,21 @@ public class SectionPersistence extends AbstractPersistence<Section>{
             }
         }
         return null;
+    }
+
+    public List<Schedule> getSchedulesForThisSection(Section section) {
+        StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+        Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
+        SessionFactory factory = meta.getSessionFactoryBuilder().build();
+        Session session = factory.openSession();
+        Transaction t = session.beginTransaction();
+        List<Schedule> schedules = (new SchedulePersistence()).readAll();
+        Section sectionFromDataBase = session.get(Section.class, section.getSectionId());
+        Set<Schedule> searchedSchedules = sectionFromDataBase.getSchedules();
+        List<Schedule> searchedSchedulesAsList = new ArrayList<>(searchedSchedules);
+        t.commit();
+        factory.close();
+        session.close();
+        return searchedSchedulesAsList;
     }
 }

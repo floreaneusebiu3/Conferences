@@ -1,5 +1,6 @@
 package viewModel.command.participantComands;
 
+import model.Schedule;
 import model.Section;
 import model.persistence.SectionPersistence;
 import viewModel.VMParticipant;
@@ -20,14 +21,16 @@ public class ShowSectionsCommand implements Command {
         vmParticipant.getSectionsTable().get().clearData();
         List<Section> sections = (new SectionPersistence()).readAll();
         System.out.println(sections.size());
-        List<String> row;
         for (Section section : sections) {
-            row = new ArrayList<>();
-            row.add(section.getName());
-            row.add(section.getSchedule().getDate().toString());
-            row.add(String.valueOf(section.getSchedule().getStartHour()));
-            row.add(String.valueOf(section.getSchedule().getEndHour()));
-            vmParticipant.getSectionsTable().get().add(row);
+            System.out.println( section.getName() + "--" + (new SectionPersistence()).getSchedulesForThisSection(section).size()+ "*****************************************************************************************************************************");
+            for(Schedule schedule: (new SectionPersistence()).getSchedulesForThisSection(section)) {
+                List<String> row = new ArrayList<>();
+                row.add(section.getName());
+                row.add( schedule.getDate().toString());
+                row.add(String.valueOf(schedule.getStartHour()));
+                row.add(String.valueOf(schedule.getEndHour()));
+                vmParticipant.getSectionsTable().get().add(row);
+            }
         }
     }
 }

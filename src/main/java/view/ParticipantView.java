@@ -129,7 +129,6 @@ public class ParticipantView {
         }
         vmParticipant.getShowSectionsCommand().execute();
         vmParticipant.getShowSelectedSectionsCommand().execute();
-        System.out.println(sectionsTable.getModel().getValueAt(0, 2));
 
         frame.add(initPanel);
         frame.setVisible(true);
@@ -139,6 +138,7 @@ public class ParticipantView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 vmParticipant.getUploadFileCommand().execute();
+                vmParticipant.getShowSectionsCommand().execute();
             }
         });
 
@@ -150,6 +150,7 @@ public class ParticipantView {
                 frame.repaint();
             }
         });
+
         seeConferenceVolumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

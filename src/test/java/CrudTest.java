@@ -39,7 +39,7 @@ public class CrudTest {
        Participant participantTest = new Participant();
        participantTest.setParticipantId(UUID.randomUUID().toString());
        participantTest.setName("John");
-       participantTest.setRegistered(true);
+       participantTest.setApproved(true);
 
        participantPersistence.insert(participantTest);
 
@@ -52,7 +52,7 @@ public class CrudTest {
         Participant participantTest = new Participant();
         participantTest.setParticipantId(UUID.randomUUID().toString());
         participantTest.setName("John");
-        participantTest.setRegistered(true);
+        participantTest.setApproved(true);
 
         participantPersistence.update(participantTest);
 

@@ -1,9 +1,11 @@
 package viewModel.command.participantComands;
 
+import model.Schedule;
 import model.Section;
 import model.SectionParticipant;
 import model.User;
 import model.persistence.SectionParticipantPersistence;
+import model.persistence.SectionPersistence;
 import viewModel.VMParticipant;
 import viewModel.command.Command;
 
@@ -22,12 +24,14 @@ public class ShowSelectedSectionsCommand implements Command {
         vmParticipant.getJoinedSectionsTable().get().clearData();
         List<Section> sectionList = getAllSectionsOfThisUser(vmParticipant.getLoggedUser());
         for (Section section : sectionList) {
-            List<String> row = new ArrayList<>();
-            row.add(section.getName());
-            row.add( section.getSchedule().getDate().toString());
-            row.add(String.valueOf(section.getSchedule().getStartHour()));
-            row.add(String.valueOf(section.getSchedule().getEndHour()));
-            vmParticipant.getJoinedSectionsTable().get().add(row);
+            for(Schedule schedule: (new SectionPersistence()).getSchedulesForThisSection(section)) {
+                List<String> row = new ArrayList<>();
+                row.add(section.getName());
+                row.add( schedule.getDate().toString());
+                row.add(String.valueOf(schedule.getStartHour()));
+                row.add(String.valueOf(schedule.getEndHour()));
+                vmParticipant.getJoinedSectionsTable().get().add(row);
+            }
         }
     }
 

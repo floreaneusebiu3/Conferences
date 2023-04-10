@@ -1,8 +1,9 @@
-package model;
+package utils;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 import java.util.List;
+
 
 public class MyTable extends DefaultTableModel {
     private HashMap<Integer, List<String>> records = new HashMap<>();
@@ -12,6 +13,10 @@ public class MyTable extends DefaultTableModel {
     public MyTable(List<String> head) {
         this.head = head;
         this.columnCount = head.size();
+    }
+
+    public boolean isCellEditable(int row, int column) {
+        return true;
     }
 
     public int getRowCount() {
@@ -34,6 +39,12 @@ public class MyTable extends DefaultTableModel {
     public void add(List<String> s) {
         this.records.put(records.size(), s);
         this.fireTableRowsInserted(this.records.size() - 1, this.records.size() - 1);
+    }
+
+    public void setValueAt(Object aValue, int row, int column) {
+        List<String> dataRow = records.get(row);
+        dataRow.set(column, (String) aValue);
+        records.put(row, dataRow);
     }
 
     private Object getCellValue(int listSize, int column, int row) {

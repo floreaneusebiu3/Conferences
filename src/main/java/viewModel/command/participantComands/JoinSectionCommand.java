@@ -1,10 +1,7 @@
 package viewModel.command.participantComands;
 
 import model.*;
-import model.persistence.ParticipantPersistence;
-import model.persistence.PresentationFilePersistence;
-import model.persistence.SectionParticipantPersistence;
-import model.persistence.SectionPersistence;
+import model.persistence.*;
 import viewModel.VMParticipant;
 import viewModel.command.Command;
 
@@ -28,7 +25,17 @@ public class JoinSectionCommand implements Command {
             showMessage("You must select a section");
             return;
         }
-        addParticipantToSection(vmParticipant.getLoggedUser(), sectionList.get(vmParticipant.getSelectedRow().get()).getSectionId());
+        String searchedSectionName = (String) vmParticipant.getSectionsTable().get().getValueAt(vmParticipant.getSelectedRow().get(), 0);
+        addParticipantToSection(vmParticipant.getLoggedUser(), getSectionIdFromSelectedRow(sectionList, searchedSectionName));
+    }
+
+    private String getSectionIdFromSelectedRow(List<Section> sections, String searchedSectionName) {
+        for (Section section : sections) {
+            if (section.getName().equals(searchedSectionName)) {
+                return section.getSectionId();
+            }
+        }
+        return null;
     }
 
     private void showMessage(String message) {
@@ -61,7 +68,7 @@ public class JoinSectionCommand implements Command {
         participant.setName(user.getFirstName());
         participant.setParticipantId(UUID.randomUUID().toString());
         participant.setUser(user);
-        participant.setRegistered(false);
+        participant.setApproved(false);
         if (user.getUserId() == null) {
             User newUser = new User();
             newUser.setUserId(UUID.randomUUID().toString());
@@ -71,7 +78,8 @@ public class JoinSectionCommand implements Command {
             newUser.setPassword("password" + new Random().nextInt(1000));
             newUser.setAge(0);
             newUser.setApproved(false);
-            participant.setUser(user);
+            (new UserPersistence()).insert(newUser);
+            participant.setUser(newUser);
         }
         (new ParticipantPersistence()).insert(participant);
         return participant;

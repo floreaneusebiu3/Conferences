@@ -20,7 +20,7 @@ public class Participant implements Serializable {
     @Column(unique = true, nullable = false)
     private String participantId;
     private String name;
-    private boolean registered;
+    private boolean approved;
 
     @OneToOne
     @JoinColumn(name = "userIdFK")

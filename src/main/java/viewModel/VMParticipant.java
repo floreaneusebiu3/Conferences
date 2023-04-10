@@ -2,7 +2,7 @@ package viewModel;
 
 import lombok.Getter;
 import lombok.Setter;
-import model.MyTable;
+import utils.MyTable;
 import model.User;
 import net.sds.mvvm.properties.Property;
 import net.sds.mvvm.properties.PropertyFactory;
@@ -32,12 +32,12 @@ public class VMParticipant {
 
 
     public VMParticipant() {
-        List<String> head = List.of(new String[]{"SECTION", "DATA", "START HOUR", "END HOUR"});
         selectedRow = PropertyFactory.createProperty("row", this, Integer.class);
-        sectionsTable = PropertyFactory.createProperty("sectionsTable", this, new MyTable(head));
         selectedRowFromJoinedSections = PropertyFactory.createProperty("rowFromJoined", this, Integer.class);
-        joinedSectionsTable = PropertyFactory.createProperty("joinedSectionsTable", this, new MyTable(head));
         selectedRowFromFilesTable = PropertyFactory.createProperty("rowFromFiles", this, Integer.class);
+        List<String> head = List.of(new String[]{"SECTION", "DATA", "START HOUR", "END HOUR"});
+        sectionsTable = PropertyFactory.createProperty("sectionsTable", this, new MyTable(head));
+        joinedSectionsTable = PropertyFactory.createProperty("joinedSectionsTable", this, new MyTable(head));
         List<String> filesHead = List.of(new String[]{"FILE", "PARTICIPANT", "SECTION"});
         filesTable = PropertyFactory.createProperty("filesTable", this, new MyTable(filesHead));
         showSectionsCommand = new ShowSectionsCommand(this);

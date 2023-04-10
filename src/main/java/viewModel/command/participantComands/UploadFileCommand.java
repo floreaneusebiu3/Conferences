@@ -1,9 +1,12 @@
 package viewModel.command.participantComands;
 
+import model.Section;
+import model.persistence.SectionPersistence;
 import viewModel.VMParticipant;
 import viewModel.command.Command;
 
 import javax.swing.*;
+import java.util.List;
 
 public class UploadFileCommand implements Command {
     private VMParticipant vmParticipant;
