@@ -37,7 +37,7 @@ public class VMParticipant {
         selectedRowFromFilesTable = PropertyFactory.createProperty("rowFromFiles", this, Integer.class);
         List<String> head = List.of(new String[]{"SECTION", "DATA", "START HOUR", "END HOUR"});
         sectionsTable = PropertyFactory.createProperty("sectionsTable", this, new MyTable(head));
-        joinedSectionsTable = PropertyFactory.createProperty("joinedSectionsTable", this, new MyTable(head));
+        joinedSectionsTable = PropertyFactory.createProperty("joinedSectionsTable", this, new MyTable(List.of(new String[]{"SECTION"})));
         List<String> filesHead = List.of(new String[]{"FILE", "PARTICIPANT", "SECTION"});
         filesTable = PropertyFactory.createProperty("filesTable", this, new MyTable(filesHead));
         showSectionsCommand = new ShowSectionsCommand(this);

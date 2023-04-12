@@ -21,10 +21,6 @@ public class JoinSectionCommand implements Command {
     @Override
     public void execute() {
         List<Section> sectionList = new SectionPersistence().readAll();
-        if (vmParticipant.getSelectedRow().get() >= sectionList.size() || vmParticipant.getSelectedRow().get() < 0) {
-            showMessage("You must select a section");
-            return;
-        }
         String searchedSectionName = (String) vmParticipant.getSectionsTable().get().getValueAt(vmParticipant.getSelectedRow().get(), 0);
         addParticipantToSection(vmParticipant.getLoggedUser(), getSectionIdFromSelectedRow(sectionList, searchedSectionName));
     }

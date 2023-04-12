@@ -10,7 +10,6 @@ import viewModel.command.loginComands.LoginCommand;
 @Setter
 @Getter
 public class VMLogin {
-
     private Property<String> userField;
     private Property<String> passwordField;
     private Property<String> mailField;

@@ -29,6 +29,9 @@ public class VMOrganizer {
     Command insertParticipantAndFileCommand;
     Command deleteParticipantAndFileCommand;
     Command approveParticipantCommand;
+    Command showAllSectionsCommand;
+    Command addNewScheduleCommand;
+    Command serializeDataCommand;
 
     public VMOrganizer() {
         selectedRowFromParticipantsFilesTable = PropertyFactory.createProperty("selectedRowFromParticipantsFilesTable", this, Integer.class);
@@ -50,6 +53,9 @@ public class VMOrganizer {
         insertParticipantAndFileCommand = new InsertParticipantAndFile(this);
         deleteParticipantAndFileCommand = new DeleteParticipantAndFileCommand(this);
         approveParticipantCommand = new ApproveParticipantCommand(this);
+        showAllSectionsCommand = new ShowAllSectionsCommand(this);
+        addNewScheduleCommand = new AddNewScheduleCommand(this);
+        serializeDataCommand = new SerializeDataCommand(this);
     }
 
 }

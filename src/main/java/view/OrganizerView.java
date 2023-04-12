@@ -122,7 +122,7 @@ public class OrganizerView {
         scrollPane2.setBounds(850, 430, 700, 300);
         bottomPanel.add(scrollPane2);
 
-        dateField = new JTextField("DATA");
+        dateField = new JTextField("DATA dd/MM/uuuu");
         dateField.setBounds(850, 740, 300, 50);
         dateField.setHorizontalAlignment(JTextField.CENTER);
         dateField.setBackground(Color.black);
@@ -132,7 +132,7 @@ public class OrganizerView {
         dateField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (dateField.getText().equals("DATA")) {
+                if (dateField.getText().equals("DATA dd/MM/uuuu")) {
                     dateField.setForeground(Color.WHITE);
                     dateField.setText("");
                 }
@@ -141,7 +141,7 @@ public class OrganizerView {
             @Override
             public void focusLost(FocusEvent e) {
                 if (dateField.getText().isEmpty()) {
-                    dateField.setText("DATA");
+                    dateField.setText("DATA dd/MM/uuuu");
                 }
             }
         });
@@ -201,6 +201,7 @@ public class OrganizerView {
         bottomPanel.add(addScheduleButton);
 
         vmOrganizer.getShowParticipantsAndFilesCommand().execute();
+        vmOrganizer.getShowAllSectionsCommand().execute();
         frame.add(bottomPanel);
         frame.add(bottomPanel);
         frame.setLayout(null);
@@ -213,6 +214,14 @@ public class OrganizerView {
             e.printStackTrace();
         }
 
+        addScheduleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vmOrganizer.getAddNewScheduleCommand().execute();
+                vmOrganizer.getShowAllSectionsCommand().execute();
+            }
+        });
+
         approveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -223,6 +232,7 @@ public class OrganizerView {
         filterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                vmOrganizer.getSerializeDataCommand().execute();
                 vmOrganizer.getShowFilteredParticipantsCommand().execute();
                 frame.repaint();
             }

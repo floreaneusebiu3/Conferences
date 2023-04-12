@@ -1,11 +1,7 @@
 package viewModel.command.participantComands;
 
-import model.Schedule;
-import model.Section;
-import model.SectionParticipant;
-import model.User;
-import model.persistence.SectionParticipantPersistence;
-import model.persistence.SectionPersistence;
+import model.*;
+import model.persistence.PresentationFilePersistence;
 import viewModel.VMParticipant;
 import viewModel.command.Command;
 
@@ -24,23 +20,18 @@ public class ShowSelectedSectionsCommand implements Command {
         vmParticipant.getJoinedSectionsTable().get().clearData();
         List<Section> sectionList = getAllSectionsOfThisUser(vmParticipant.getLoggedUser());
         for (Section section : sectionList) {
-            for(Schedule schedule: (new SectionPersistence()).getSchedulesForThisSection(section)) {
-                List<String> row = new ArrayList<>();
-                row.add(section.getName());
-                row.add( schedule.getDate().toString());
-                row.add(String.valueOf(schedule.getStartHour()));
-                row.add(String.valueOf(schedule.getEndHour()));
-                vmParticipant.getJoinedSectionsTable().get().add(row);
-            }
+                    List<String> row = new ArrayList<>();
+                    row.add(section.getName());
+                    vmParticipant.getJoinedSectionsTable().get().add(row);
         }
     }
 
     public List<Section> getAllSectionsOfThisUser(User user) {
-        List<SectionParticipant> sectionParticipants = (new SectionParticipantPersistence()).readAll();
+        List<PresentationFile> presentationFiles = (new PresentationFilePersistence()).readAll();
         List<Section> sections = new ArrayList<>();
-        for (SectionParticipant sectionParticipant : sectionParticipants) {
-            if (sectionParticipant.getParticipant().getName().equals(user.getFirstName())) {
-                sections.add(sectionParticipant.getSection());
+        for (PresentationFile presentationFile : presentationFiles) {
+            if (presentationFile.getParticipant().getName().equals(user.getFirstName())) {
+                sections.add(presentationFile.getSection());
             }
         }
         return sections;
