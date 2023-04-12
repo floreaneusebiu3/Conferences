@@ -19,9 +19,8 @@ public class ShowAllUsersCommand implements Command {
     public void execute() {
         vmAdmin.getUsersTable().get().clearData();
         List<User> allUsers = (new UserPersistence()).readAll();
-        List<User> filteredUsers = getNotApprovedUsers(allUsers);
         List<String> row;
-        for (User user: filteredUsers) {
+        for (User user: allUsers) {
             row = new ArrayList<>();
             row.add(String.valueOf(user.isApproved()));
             row.add(user.getFirstName());
@@ -48,15 +47,5 @@ public class ShowAllUsersCommand implements Command {
         row.add("");
         row.add("");
         vmAdmin.getUsersTable().get().add(row);
-    }
-
-    private List<User> getNotApprovedUsers(List<User> users) {
-        List<User> notApprovedUsers = new ArrayList<>();
-        for (User user : users) {
-            if(!user.isApproved()) {
-                notApprovedUsers.add(user);
-            }
-        }
-        return notApprovedUsers;
     }
 }

@@ -35,12 +35,10 @@ public class ShowFilteredParticipantsCommand implements Command {
         List<Participant> participants = (new ParticipantPersistence()).readAll();
         List<String> row;
         for (Participant participant : participants) {
-            if (!participant.isApproved()) {
                 row = new ArrayList<>();
                 row.add(participant.getName());
                 row.add("approved:  " + (participant.isApproved()));
                 vmOrganizer.getFilteredParticipantsTable().get().add(row);
-            }
         }
     }
 

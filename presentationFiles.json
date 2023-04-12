@@ -1,9 +1,25 @@
 [ {
-  "presentationFileId" : "57c231be-1210-41ae-9357-ba17dd6dd2fd",
+  "presentationFileId" : "b05072a0-6e99-492d-aefa-7cd4c2a6fa5f",
+  "fileAddress" : "C:\\Users\\flore\\Documents\\cerere2023.pdf",
+  "participant" : {
+    "participantId" : "7a68dae7-6669-4682-aac8-5f4802691db0",
+    "name" : "Eusebiu",
+    "approved" : true
+  }
+}, {
+  "presentationFileId" : "c09bc35d-3990-4f8e-b0fb-61a3ee4bb515",
   "fileAddress" : "C:\\Users\\flore\\Documents\\map.obj",
   "participant" : {
-    "participantId" : "87a9d11a-3bd0-46cc-9ea0-a8d8d67a1c9e",
-    "name" : "Alex",
-    "approved" : false
+    "participantId" : "a3e013f4-1c12-404f-8a73-2cd14d07f5a8",
+    "name" : "Guest5ce37d51-ba85-4dde-808a-bbe908a87491",
+    "approved" : true
+  }
+}, {
+  "presentationFileId" : "20ba72e8-8a84-4f97-95f7-907be1ec96ec",
+  "fileAddress" : "C:\\Users\\flore\\Downloads\\PI-L8\\wheel.bmp",
+  "participant" : {
+    "participantId" : "a3e013f4-1c12-404f-8a73-2cd14d07f5a8",
+    "name" : "Guest5ce37d51-ba85-4dde-808a-bbe908a87491",
+    "approved" : true
   }
 } ]
