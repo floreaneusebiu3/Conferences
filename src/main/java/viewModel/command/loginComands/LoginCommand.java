@@ -45,7 +45,7 @@ public class LoginCommand implements Command {
     private void showUserInterface(User user) {
         switch (user.getRole()) {
             case "participant":
-                new ParticipantView(user);
+                new ParticipantView(user.getUserId(),"registeredUser");
                 break;
             case "organizer":
                 new OrganizerView();

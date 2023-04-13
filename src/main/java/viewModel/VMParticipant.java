@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 @Getter
 public class VMParticipant {
+    private Property<String> userIdField;
+    private Property<String> userMail;
     private Property<MyTable> sectionsTable;
     private Property<Integer> selectedRow;
     private Property<MyTable> joinedSectionsTable;
@@ -32,6 +34,8 @@ public class VMParticipant {
 
 
     public VMParticipant() {
+        userIdField = PropertyFactory.createProperty("userIdField", this, String.class);
+        userMail = PropertyFactory.createProperty("userMail", this, String.class);
         selectedRow = PropertyFactory.createProperty("row", this, Integer.class);
         selectedRowFromJoinedSections = PropertyFactory.createProperty("rowFromJoined", this, Integer.class);
         selectedRowFromFilesTable = PropertyFactory.createProperty("rowFromFiles", this, Integer.class);

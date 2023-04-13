@@ -1,25 +1,41 @@
 [ {
-  "presentationFileId" : "b05072a0-6e99-492d-aefa-7cd4c2a6fa5f",
-  "fileAddress" : "C:\\Users\\flore\\Documents\\cerere2023.pdf",
+  "presentationFileId" : "554d29ed-d39e-4c7d-8b61-3391cfab5202",
+  "fileAddress" : "C:\\Users\\flore\\Desktop\\Nagarro\\Nagarro-Teme\\Week11\\ISI1519-Week11-Collectionspart2.pdf",
   "participant" : {
-    "participantId" : "7a68dae7-6669-4682-aac8-5f4802691db0",
+    "participantId" : "b14974dc-3e3c-45cb-9f89-d798e8411d75",
+    "name" : "Guest33b8320d-bcba-4733-b8cb-717095320bfa",
+    "approved" : false
+  }
+}, {
+  "presentationFileId" : "6a1f5710-9e2b-467d-b6b1-a949389517e2",
+  "fileAddress" : "C:\\Users\\flore\\Desktop\\Nagarro\\Nagarro-Teme\\Week11\\ISI1519-Week11-Collectionspart2.pdf",
+  "participant" : {
+    "participantId" : "b14974dc-3e3c-45cb-9f89-d798e8411d75",
+    "name" : "Guest33b8320d-bcba-4733-b8cb-717095320bfa",
+    "approved" : false
+  }
+}, {
+  "presentationFileId" : "c31cd380-0d25-447e-81f5-ce7af74fbd46",
+  "fileAddress" : "C:\\Users\\flore\\Desktop\\Faculta\\PI\\PI-L1r.pdf",
+  "participant" : {
+    "participantId" : "bc2fa9dc-b28c-4f71-8b80-c77001826f12",
+    "name" : "user933",
+    "approved" : true
+  }
+}, {
+  "presentationFileId" : "1683c7c1-1d7c-4b24-a2b9-93a573fccfb5",
+  "fileAddress" : "C:\\Users\\flore\\Documents\\well.obj",
+  "participant" : {
+    "participantId" : "277d91fe-28b1-431e-afe6-aebc9d8555a5",
     "name" : "Eusebiu",
-    "approved" : true
+    "approved" : false
   }
 }, {
-  "presentationFileId" : "c09bc35d-3990-4f8e-b0fb-61a3ee4bb515",
-  "fileAddress" : "C:\\Users\\flore\\Documents\\map.obj",
+  "presentationFileId" : "b3fd7fbd-0713-4ef5-a132-d85ff72447aa",
+  "fileAddress" : "C:\\Users\\flore\\Desktop\\Faculta\\PI\\PI-L1r.pdf",
   "participant" : {
-    "participantId" : "a3e013f4-1c12-404f-8a73-2cd14d07f5a8",
-    "name" : "Guest5ce37d51-ba85-4dde-808a-bbe908a87491",
-    "approved" : true
-  }
-}, {
-  "presentationFileId" : "20ba72e8-8a84-4f97-95f7-907be1ec96ec",
-  "fileAddress" : "C:\\Users\\flore\\Downloads\\PI-L8\\wheel.bmp",
-  "participant" : {
-    "participantId" : "a3e013f4-1c12-404f-8a73-2cd14d07f5a8",
-    "name" : "Guest5ce37d51-ba85-4dde-808a-bbe908a87491",
-    "approved" : true
+    "participantId" : "277d91fe-28b1-431e-afe6-aebc9d8555a5",
+    "name" : "Eusebiu",
+    "approved" : false
   }
 } ]

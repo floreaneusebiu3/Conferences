@@ -5,6 +5,8 @@ import view.ParticipantView;
 import viewModel.VMLogin;
 import viewModel.command.Command;
 
+import java.util.UUID;
+
 public class LoginAsGuestCommand implements Command {
     private VMLogin vmLogin;
 
@@ -16,7 +18,7 @@ public class LoginAsGuestCommand implements Command {
     public void execute() {
         User user = new User();
         user.setMail(vmLogin.getMailField().get());
-         new ParticipantView(user);
+         new ParticipantView(UUID.randomUUID().toString(), vmLogin.getMailField().get());
     }
 
 }

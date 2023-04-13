@@ -56,7 +56,7 @@ public class JoinSectionCommand implements Command {
 
     private Participant getParticipant(User user) {
         List<Participant> participants = (new ParticipantPersistence()).readAll();
-        for(Participant participant : participants) {
+        for (Participant participant : participants) {
             if (participant.getName().equals(user.getFirstName()))
                 return participant;
         }
@@ -65,18 +65,7 @@ public class JoinSectionCommand implements Command {
         participant.setParticipantId(UUID.randomUUID().toString());
         participant.setUser(user);
         participant.setApproved(false);
-        if (user.getUserId() == null) {
-            User newUser = new User();
-            newUser.setUserId(UUID.randomUUID().toString());
-            newUser.setMail(user.getMail());
-            newUser.setRole("participant");
-            newUser.setUsername("user" + new Random().nextInt(1000));
-            newUser.setPassword("password" + new Random().nextInt(1000));
-            newUser.setAge(0);
-            newUser.setApproved(false);
-            (new UserPersistence()).insert(newUser);
-            participant.setUser(newUser);
-        }
+        participant.setUser(vmParticipant.getLoggedUser());
         (new ParticipantPersistence()).insert(participant);
         return participant;
     }

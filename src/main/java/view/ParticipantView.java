@@ -32,10 +32,17 @@ public class ParticipantView {
     @BindValues({@Bind(value = "model", target = "filesTable.value", type = BindingType.TARGET_TO_SOURCE),
             @Bind(value = "selectedRow", target = "selectedRowFromFilesTable.value", type = BindingType.BI_DIRECTIONAL)})
     private JTable filesTable;
+    @Bind(value = "text", target = "userIdField.value", type = BindingType.BI_DIRECTIONAL)
+    private JTextField userIdField;
+    @Bind(value = "text", target = "userMail.value", type = BindingType.BI_DIRECTIONAL)
+    private JTextField userMail;
 
-    public ParticipantView(User user) {
+    public ParticipantView(String userId, String userMail1) {
+        userIdField = new JTextField(userId);
+        userIdField.setText(userId);
+        userMail = new JTextField(userMail1);
+        userMail.setText(userMail1);
         vmParticipant = new VMParticipant();
-        vmParticipant.getSetUserCommand().execute(user);
         frame = new JFrame("Participant");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -127,6 +134,8 @@ public class ParticipantView {
         } catch (BindingException e) {
             e.printStackTrace();
         }
+
+        vmParticipant.getSetUserCommand().execute();
         vmParticipant.getShowSectionsCommand().execute();
         vmParticipant.getShowSelectedSectionsCommand().execute();
 

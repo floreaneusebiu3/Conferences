@@ -17,6 +17,7 @@ public class ShowSelectedSectionsCommand implements Command {
 
     @Override
     public void execute() {
+        System.out.println(vmParticipant.getLoggedUser() + "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         vmParticipant.getJoinedSectionsTable().get().clearData();
         List<Section> sectionList = getAllSectionsOfThisUser(vmParticipant.getLoggedUser());
         for (Section section : sectionList) {
