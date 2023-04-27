@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class SectionPersistence extends AbstractPersistence<Section>{
+public class SectionPersistence extends AbstractPersistence<Section> {
     public Section getSectionById(String name) {
         List<Section> sectionList = this.readAll();
         for (Section section : sectionList) {
@@ -22,6 +22,17 @@ public class SectionPersistence extends AbstractPersistence<Section>{
             }
         }
         return null;
+    }
+
+    public List<Section> getAllSectionsByUser(String userName) {
+        List<PresentationFile> presentationFiles = (new PresentationFilePersistence()).readAll();
+        List<Section> sections = new ArrayList<>();
+        for (PresentationFile presentationFile : presentationFiles) {
+            if (presentationFile.getParticipant().getName().equals(userName)) {
+                sections.add(presentationFile.getSection());
+            }
+        }
+        return sections;
     }
 
     public List<Schedule> getSchedulesForThisSection(Section section) {

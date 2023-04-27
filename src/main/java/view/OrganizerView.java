@@ -1,45 +1,37 @@
 package view;
 
-import net.sds.mvvm.bindings.*;
-import viewModel.VMOrganizer;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
+@Setter
+@Getter
 public class OrganizerView {
-    @BindValues({@Bind(value = "model", target = "participantsFilesTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromParticipantsFilesTable.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable participantsFilesTable;
-    @BindValues({@Bind(value = "model", target = "filteredParticipantsTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromFilteredParticipantsTable.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable filteredParticipantsTable;
-    @BindValues({@Bind(value = "model", target = "sectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromSectionsTable.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable sectionsTable;
-    @Bind(value = "text", target = "sectionField.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField sectionTextField;
-    @Bind(value = "text", target = "dataField.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField dateField;
-    @Bind(value = "text", target = "startHourField.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField startHourField;
-    @Bind(value = "text", target = "endHourField.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField endHourField;
     private JFrame frame;
     private JPanel bottomPanel;
+    private Object[][] participantsData = new Object[100][4];
+    private String[] participantsHead = new String[]{"PARTICIPANT", "APPROVED", "FILE", "SECTION"};
+    private JTable participantsFilesTable;
+    private Object[][] filteredParticipantsData = new Object[100][2];
+    private String[] filteredParticipantsHead = new String[]{"PARTICIPANT", "SECTION"};
+    private JTable filteredParticipantsTable;
+    private Object[][] sectionsData = new Object[100][4];
+    private String[] sectionsHead = new String[]{"SECTION", "DATA", "START HOUR", "END HOUR"};
+    private JTable sectionsTable;
+    private JTextField sectionTextField;
+    private JTextField dateField;
+    private JTextField startHourField;
+    private JTextField endHourField;
     private JButton addScheduleButton;
     private JButton filterButton;
     private JButton insertButton;
     private JButton deleteButton;
     private JButton updateButton;
     private JButton approveButton;
-    private VMOrganizer vmOrganizer;
 
     public OrganizerView() {
-        vmOrganizer = new VMOrganizer();
         frame = new JFrame("Organizer");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -55,14 +47,14 @@ public class OrganizerView {
         bottomPanel.setBounds(0, 0, 1600, 900);
 
 
-        participantsFilesTable = new JTable();
+        participantsFilesTable = new JTable(participantsData, participantsHead);
         JScrollPane scrollPane = new JScrollPane(participantsFilesTable);
         scrollPane.setBackground(Color.GRAY);
         scrollPane.setForeground(Color.WHITE);
         scrollPane.setBounds(100, 50, 1300, 300);
         bottomPanel.add(scrollPane);
 
-        filteredParticipantsTable = new JTable();
+        filteredParticipantsTable = new JTable(filteredParticipantsData, filteredParticipantsHead);
         JScrollPane scrollPane1 = new JScrollPane(filteredParticipantsTable);
         scrollPane1.setBackground(Color.GRAY);
         scrollPane1.setBackground(Color.WHITE);
@@ -76,22 +68,7 @@ public class OrganizerView {
         sectionTextField.setForeground(Color.WHITE);
         sectionTextField.setFont(new Font("Verdana", Font.BOLD, 20));
         bottomPanel.add(sectionTextField);
-        sectionTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (sectionTextField.getText().equals("SECTION")) {
-                    sectionTextField.setForeground(Color.WHITE);
-                    sectionTextField.setText("");
-                }
-            }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (sectionTextField.getText().isEmpty()) {
-                    sectionTextField.setText("SECTION");
-                }
-            }
-        });
 
         approveButton = new JButton(new ImageIcon("img/approve.png"));
         approveButton.setBounds(150, 750, 80, 80);
@@ -115,7 +92,7 @@ public class OrganizerView {
         updateButton.setBounds(1470, 260, 60, 60);
         bottomPanel.add(updateButton);
 
-        sectionsTable = new JTable();
+        sectionsTable = new JTable(sectionsData, sectionsHead);
         JScrollPane scrollPane2 = new JScrollPane(sectionsTable);
         scrollPane2.setBackground(Color.GRAY);
         scrollPane2.setBackground(Color.WHITE);
@@ -129,22 +106,6 @@ public class OrganizerView {
         dateField.setForeground(Color.WHITE);
         dateField.setFont(new Font("Verdana", Font.BOLD, 20));
         bottomPanel.add(dateField);
-        dateField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (dateField.getText().equals("DATA dd/MM/uuuu")) {
-                    dateField.setForeground(Color.WHITE);
-                    dateField.setText("");
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (dateField.getText().isEmpty()) {
-                    dateField.setText("DATA dd/MM/uuuu");
-                }
-            }
-        });
 
         startHourField = new JTextField("START");
         startHourField.setBounds(1200, 740, 150, 50);
@@ -153,22 +114,6 @@ public class OrganizerView {
         startHourField.setForeground(Color.WHITE);
         startHourField.setFont(new Font("Verdana", Font.BOLD, 20));
         bottomPanel.add(startHourField);
-        startHourField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (startHourField.getText().equals("START")) {
-                    startHourField.setForeground(Color.WHITE);
-                    startHourField.setText("");
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (startHourField.getText().isEmpty()) {
-                    startHourField.setText("START");
-                }
-            }
-        });
 
         endHourField = new JTextField("END");
         endHourField.setBounds(1400, 740, 150, 50);
@@ -177,22 +122,6 @@ public class OrganizerView {
         endHourField.setForeground(Color.WHITE);
         endHourField.setFont(new Font("Verdana", Font.BOLD, 20));
         bottomPanel.add(endHourField);
-        endHourField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (endHourField.getText().equals("END")) {
-                    endHourField.setForeground(Color.WHITE);
-                    endHourField.setText("");
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (endHourField.getText().isEmpty()) {
-                    endHourField.setText("END");
-                }
-            }
-        });
 
         addScheduleButton = new JButton("ADD SCHEDULE");
         addScheduleButton.setBounds(1150, 800, 200, 50);
@@ -200,64 +129,10 @@ public class OrganizerView {
         addScheduleButton.setForeground(Color.WHITE);
         bottomPanel.add(addScheduleButton);
 
-        vmOrganizer.getShowParticipantsAndFilesCommand().execute();
-        vmOrganizer.getShowAllSectionsCommand().execute();
         frame.add(bottomPanel);
         frame.add(bottomPanel);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        try {
-            Binder.bind(this, vmOrganizer);
-        } catch (BindingException e) {
-            e.printStackTrace();
-        }
-
-        addScheduleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getAddNewScheduleCommand().execute();
-                vmOrganizer.getShowAllSectionsCommand().execute();
-            }
-        });
-
-        approveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getApproveParticipantCommand().execute();
-            }
-        });
-
-        filterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getSerializeDataCommand().execute();
-                vmOrganizer.getShowFilteredParticipantsCommand().execute();
-                frame.repaint();
-            }
-        });
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getUpdateParticipantAndFileCommand().execute();
-                vmOrganizer.getShowParticipantsAndFilesCommand().execute();
-            }
-        });
-        insertButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getInsertParticipantAndFileCommand().execute();
-                vmOrganizer.getShowParticipantsAndFilesCommand().execute();
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmOrganizer.getDeleteParticipantAndFileCommand().execute();
-                vmOrganizer.getShowParticipantsAndFilesCommand().execute();
-            }
-        });
     }
 }

@@ -1,27 +1,25 @@
 package view;
 
-import net.sds.mvvm.bindings.*;
-import viewModel.VMAdmin;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+@Setter
+@Getter
 public class AdminView {
     private JFrame frame;
     private JPanel initialPanel;
     private JLabel adminLabel;
-    @BindValues({@Bind(value = "model", target = "usersTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromUsersTable.value", type = BindingType.BI_DIRECTIONAL)})
+    private Object[][] usersData = new Object[100][8];
+    private String[] usersHead = new String[]{"Approved", "First Name", "Last Name", "age", "mail", "role", "username", "password"};
     private JTable usersTable;
     private JButton updateButton;
     private JButton insertButton;
     private JButton deleteButton;
-    private VMAdmin vmAdmin;
 
     public AdminView() {
-        vmAdmin = new VMAdmin();
         frame = new JFrame("Admin");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -42,7 +40,7 @@ public class AdminView {
         adminLabel.setFont(new Font("Verdana", Font.BOLD, 30));
         initialPanel.add(adminLabel);
 
-        usersTable = new JTable();
+        usersTable = new JTable(usersData, usersHead);
         JScrollPane scrollPane = new JScrollPane(usersTable);
         scrollPane.setBounds(150, 130, 1300, 600);
         usersTable.setFont(new Font("Verdana", Font.BOLD, 10));
@@ -60,38 +58,8 @@ public class AdminView {
         updateButton.setBounds(850, 750, 60, 60);
         initialPanel.add(updateButton);
 
-        vmAdmin.getShowAllUsersCommand().execute();
-
         frame.add(initialPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        try {
-            Binder.bind(this, vmAdmin);
-        } catch (BindingException e) {
-            e.printStackTrace();
-        }
-
-        insertButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmAdmin.getAddNewUserCommand().execute();
-                vmAdmin.getShowAllUsersCommand().execute();
-            }
-        });
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmAdmin.getDeleteUserCommand().execute();
-                vmAdmin.getShowAllUsersCommand().execute();
-            }
-        });
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmAdmin.getUpdateUserCommand().execute();
-                vmAdmin.getShowAllUsersCommand().execute();
-            }
-        });
     }
 }

@@ -2,6 +2,7 @@ package model.persistence;
 
 import model.Participant;
 import model.PresentationFile;
+import model.Section;
 import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,11 +18,22 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class ParticipantPersistence extends AbstractPersistence<Participant>{
+public class ParticipantPersistence extends AbstractPersistence<Participant> {
     public User getUserForThisParticipant(Participant participant) {
         User user;
         user = participant.getUser();
         return user;
+    }
+
+    public List<Participant> getParticipantsBySection(String section) {
+        List<PresentationFile> presentationFiles = (new PresentationFilePersistence()).readAll();
+        List<Participant> participants = new ArrayList<>();
+        for (PresentationFile presentationFile : presentationFiles) {
+            if (presentationFile.getSection().getName().equals(section)) {
+                participants.add(presentationFile.getParticipant());
+            }
+        }
+        return participants;
     }
 
     public List<PresentationFile> getPresentationsFileForThisParticipant(Participant participant) {

@@ -1,17 +1,25 @@
 package view;
 
-import model.User;
-import net.sds.mvvm.bindings.*;
-import viewModel.VMParticipant;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+@Setter
+@Getter
 public class ParticipantView {
     private JFrame frame;
     private JPanel initPanel;
+    private Object[][] sectionsData = new Object[100][4];
+    private String[] sectionsHead = new String[]{"SECTION", "DATA", "START HOUR", "END HOUR"};
+    private JTable sectionsTable;
+    private Object[][] joinedSectionsData = new Object[100][1];
+    private String[] joinedSectionsHead = new String[]{"SECTION"};
+    private JTable joinedSectionsTable;
+    private Object[][] filesData = new Object[100][3];
+    private String[] filesHead = new String[]{"FILE", "PARTICIPANT", "SECTION"};
+    private JTable filesTable;
     private JLabel sectionsTableTitle;
     private JLabel joinedSectionsTitle;
     private JLabel registeredCondition;
@@ -22,27 +30,8 @@ public class ParticipantView {
     private JPanel volumePanel;
     private JButton backButton;
     private JButton openFileButton;
-    private VMParticipant vmParticipant;
-    @BindValues({@Bind(value = "model", target = "sectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRow.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable sectionsTable;
-    @BindValues({@Bind(value = "model", target = "joinedSectionsTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromJoinedSections.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable joinedSectionsTable;
-    @BindValues({@Bind(value = "model", target = "filesTable.value", type = BindingType.TARGET_TO_SOURCE),
-            @Bind(value = "selectedRow", target = "selectedRowFromFilesTable.value", type = BindingType.BI_DIRECTIONAL)})
-    private JTable filesTable;
-    @Bind(value = "text", target = "userIdField.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField userIdField;
-    @Bind(value = "text", target = "userMail.value", type = BindingType.BI_DIRECTIONAL)
-    private JTextField userMail;
 
-    public ParticipantView(String userId, String userMail1) {
-        userIdField = new JTextField(userId);
-        userIdField.setText(userId);
-        userMail = new JTextField(userMail1);
-        userMail.setText(userMail1);
-        vmParticipant = new VMParticipant();
+    public ParticipantView() {
         frame = new JFrame("Participant");
         frame.setSize(1600, 900);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -73,14 +62,14 @@ public class ParticipantView {
         joinedSectionsTitle.setForeground(Color.WHITE);
         joinedSectionsTitle.setFont(new Font("Verdana", Font.BOLD, 30));
         initPanel.add(joinedSectionsTitle);
-        sectionsTable = new JTable();
+        sectionsTable = new JTable(sectionsData, sectionsHead);
         JScrollPane scrollPane = new JScrollPane(sectionsTable);
         scrollPane.setBackground(Color.GRAY);
         scrollPane.setForeground(Color.WHITE);
         scrollPane.setBounds(50, 100, 700, 600);
         initPanel.add(scrollPane);
 
-        joinedSectionsTable = new JTable();
+        joinedSectionsTable = new JTable(joinedSectionsData, joinedSectionsHead);
         JScrollPane scrollPane1 = new JScrollPane(joinedSectionsTable);
         scrollPane1.setBounds(800, 100, 700, 600);
         initPanel.add(scrollPane1);
@@ -111,7 +100,7 @@ public class ParticipantView {
         uploadFileButton.setBounds(210, 720, 50, 50);
         initPanel.add(uploadFileButton);
 
-        filesTable = new JTable();
+        filesTable = new JTable(filesData, filesHead);
         JScrollPane scrollPane2 = new JScrollPane(filesTable);
         scrollPane2.setBounds(100, 50, 1300, 700);
         volumePanel.add(scrollPane2);
@@ -128,64 +117,8 @@ public class ParticipantView {
         backButton.setBackground(new Color(68, 68, 68));
         volumePanel.add(backButton);
 
-
-        try {
-            Binder.bind(this, vmParticipant);
-        } catch (BindingException e) {
-            e.printStackTrace();
-        }
-
-        vmParticipant.getSetUserCommand().execute();
-        vmParticipant.getShowSectionsCommand().execute();
-        vmParticipant.getShowSelectedSectionsCommand().execute();
-
         frame.add(initPanel);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        uploadFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmParticipant.getUploadFileCommand().execute();
-                vmParticipant.getShowSectionsCommand().execute();
-            }
-        });
-
-        joinSectionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmParticipant.getJoinSectionCommand().execute();
-                vmParticipant.getShowSelectedSectionsCommand().execute();
-                frame.repaint();
-            }
-        });
-
-        seeConferenceVolumeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (vmParticipant.getLoggedUser().isApproved()) {
-                    frame.remove(initPanel);
-                    frame.add(volumePanel);
-                    vmParticipant.getUpdateFilesTableCommand().execute();
-                    frame.repaint();
-                }
-            }
-        });
-
-        openFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vmParticipant.getOpenFileCommand().execute();
-            }
-        });
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.remove(volumePanel);
-                frame.add(initPanel);
-                frame.repaint();
-            }
-        });
     }
 }

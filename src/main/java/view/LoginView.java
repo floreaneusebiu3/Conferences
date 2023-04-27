@@ -1,38 +1,29 @@
 package view;
 
-
-import net.sds.mvvm.bindings.Bind;
-import net.sds.mvvm.bindings.Binder;
-import net.sds.mvvm.bindings.BindingType;
-import viewModel.VMLogin;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+@Setter
+@Getter
 public class LoginView {
     private JFrame frame;
     private JLabel label;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
-    @Bind(value = "text", target = "userField.value", type = BindingType.BI_DIRECTIONAL)
     private JTextField usernameTextField;
-    @Bind(value = "text", target = "passwordField.value", type = BindingType.BI_DIRECTIONAL)
     private JPasswordField passwordTextField;
-    @Bind(value = "text", target = "mailField.value", type = BindingType.BI_DIRECTIONAL)
     private JTextField mailField;
     private JButton loginButton;
     private JButton enterAsGuestButton;
-    private VMLogin vm;
 
-    public LoginView() throws IOException{
+    public LoginView() {
         frame = new JFrame("ConferencesLogin");
         frame.setSize(600, 300);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -40,11 +31,16 @@ public class LoginView {
         int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
         frame.setLocation(x, y);
         frame.setLayout(null);
-        frame.getContentPane().setBackground(new Color(68, 68,68));
+        frame.getContentPane().setBackground(new Color(68, 68, 68));
 
-        BufferedImage image = ImageIO.read(new File("img/conference.png"));
-        label = new JLabel(new ImageIcon(image));
-        label.setBounds(20, 10, 250, 200);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File("img/conference.png"));
+            label = new JLabel(new ImageIcon(image));
+            label.setBounds(20, 10, 250, 200);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         usernameLabel = new JLabel("username:");
         usernameLabel.setBounds(280, 50, 120, 30);
@@ -72,7 +68,7 @@ public class LoginView {
 
         mailField = new JTextField("mail:");
         mailField.setForeground(Color.gray);
-        mailField.setBounds(50, 210, 220, 30 );
+        mailField.setBounds(50, 210, 220, 30);
         mailField.setFont(new Font("Verdana", Font.BOLD, 20));
 
         enterAsGuestButton = new JButton("ENTER AS GUEST");
@@ -91,46 +87,6 @@ public class LoginView {
         frame.add(enterAsGuestButton);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        vm = new VMLogin();
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vm.getLoginCommand().execute();
-                frame.dispose();
-            }
-        });
-        enterAsGuestButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vm.getLoginAsGuestCommand().execute();
-                frame.dispose();
-            }
-        });
-        try {
-            Binder.bind(this, vm);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-        mailField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (mailField.getText().equals("mail:")) {
-                    mailField.setForeground(Color.black);
-                    mailField.setText("");
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (mailField.getText().isEmpty()) {
-                    mailField.setForeground(Color.gray);
-                    mailField.setText("mail:");
-                }
-            }
-        });
     }
 }
 
