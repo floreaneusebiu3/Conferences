@@ -2,6 +2,7 @@ package controller;
 
 import model.User;
 import model.persistence.UserPersistence;
+import utils.Language;
 import view.LoginView;
 
 import javax.swing.*;
@@ -11,23 +12,35 @@ import java.awt.event.FocusListener;
 import java.util.List;
 import java.util.UUID;
 
-public class LoginController implements Observer{
+public class LoginController implements Observer {
     private LoginView loginView;
+    private Language language;
 
     public LoginController() {
         this.loginView = new LoginView();
+        language = new Language();
+        language.attachObserver(this);
         addActionListeners();
         addMailFocusListener();
     }
 
     @Override
     public void update() {
-
+        int index = language.getCurrentLanguage();
+        loginView.getUsernameLabel().setText(language.getLoginUsernameTexts().get(index));
+        loginView.getPasswordLabel().setText(language.getLoginPasswordTexts().get(index));
+        loginView.getLoginButton().setText(language.getLoginButtonTexts().get(index));
+        loginView.getEnterAsGuestButton().setText(language.getLoginEnterAsGuestButtonTexts().get(index));
     }
 
     private void addActionListeners() {
         loginView.getLoginButton().addActionListener(e -> logUser());
         loginView.getEnterAsGuestButton().addActionListener(e -> logUserAsGuest());
+        loginView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
+    }
+
+    private void chooseLanguage() {
+        language.setCurrentLanguage(loginView.getLanguageComboBox().getSelectedIndex());
     }
 
     private void addMailFocusListener() {
@@ -53,7 +66,7 @@ public class LoginController implements Observer{
     private void logUserAsGuest() {
         User user = new User();
         user.setMail(loginView.getMailField().getText());
-        new ParticipantController(UUID.randomUUID().toString(), loginView.getMailField().getText());
+        new ParticipantController(language, UUID.randomUUID().toString(), loginView.getMailField().getText());
     }
 
     private void logUser() {
@@ -64,7 +77,7 @@ public class LoginController implements Observer{
         if (user != null && user.getRole() != null && user.isApproved() == true) {
             showUserInterface(user);
         } else {
-            showMessage("TRY AGAIN");
+            showMessage(language.getLoginFailMessageTexts().get(loginView.getLanguageComboBox().getSelectedIndex()));
         }
     }
 
@@ -84,15 +97,15 @@ public class LoginController implements Observer{
     private void showUserInterface(User user) {
         switch (user.getRole()) {
             case "participant":
-                new ParticipantController(user.getUserId(), "registeredUser");
+                new ParticipantController(language, user.getUserId(), "registeredUser");
                 loginView.getFrame().dispose();
                 break;
             case "organizer":
-                new OrganizerController();
+                new OrganizerController(language);
                 loginView.getFrame().dispose();
                 break;
             case "admin":
-                new AdminController();
+                new AdminController(language);
                 loginView.getFrame().dispose();
                 break;
         }

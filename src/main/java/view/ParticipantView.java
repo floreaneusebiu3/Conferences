@@ -30,6 +30,8 @@ public class ParticipantView {
     private JPanel volumePanel;
     private JButton backButton;
     private JButton openFileButton;
+    private JComboBox<String> languageComboBox;
+    private String[] languages = {"english", "romana", "german"};
 
     public ParticipantView() {
         frame = new JFrame("Participant");
@@ -99,6 +101,10 @@ public class ParticipantView {
         uploadFileButton.setBackground(new Color(68, 68, 68));
         uploadFileButton.setBounds(210, 720, 50, 50);
         initPanel.add(uploadFileButton);
+
+        languageComboBox = new JComboBox<>(languages);
+        languageComboBox.setBounds(5, 5, 80, 30);
+        initPanel.add(languageComboBox);
 
         filesTable = new JTable(filesData, filesHead);
         JScrollPane scrollPane2 = new JScrollPane(filesTable);

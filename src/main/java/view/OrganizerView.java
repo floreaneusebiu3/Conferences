@@ -10,7 +10,7 @@ import java.awt.*;
 @Getter
 public class OrganizerView {
     private JFrame frame;
-    private JPanel bottomPanel;
+    private JPanel initPanel;
     private Object[][] participantsData = new Object[100][4];
     private String[] participantsHead = new String[]{"PARTICIPANT", "APPROVED", "FILE", "SECTION"};
     private JTable participantsFilesTable;
@@ -30,6 +30,8 @@ public class OrganizerView {
     private JButton deleteButton;
     private JButton updateButton;
     private JButton approveButton;
+    private String[] languages = {"english", "romana", "german"};
+    private JComboBox<String> languageComboBox;
 
     public OrganizerView() {
         frame = new JFrame("Organizer");
@@ -41,10 +43,10 @@ public class OrganizerView {
         frame.setLayout(null);
         frame.getContentPane().setBackground(new Color(68, 68, 68));
 
-        bottomPanel = new JPanel();
-        bottomPanel.setLayout(null);
-        bottomPanel.setBackground(new Color(68, 68, 68));
-        bottomPanel.setBounds(0, 0, 1600, 900);
+        initPanel = new JPanel();
+        initPanel.setLayout(null);
+        initPanel.setBackground(new Color(68, 68, 68));
+        initPanel.setBounds(0, 0, 1600, 900);
 
 
         participantsFilesTable = new JTable(participantsData, participantsHead);
@@ -52,14 +54,14 @@ public class OrganizerView {
         scrollPane.setBackground(Color.GRAY);
         scrollPane.setForeground(Color.WHITE);
         scrollPane.setBounds(100, 50, 1300, 300);
-        bottomPanel.add(scrollPane);
+        initPanel.add(scrollPane);
 
         filteredParticipantsTable = new JTable(filteredParticipantsData, filteredParticipantsHead);
         JScrollPane scrollPane1 = new JScrollPane(filteredParticipantsTable);
         scrollPane1.setBackground(Color.GRAY);
         scrollPane1.setBackground(Color.WHITE);
         scrollPane1.setBounds(50, 430, 700, 300);
-        bottomPanel.add(scrollPane1);
+        initPanel.add(scrollPane1);
 
         sectionTextField = new JTextField("SECTION");
         sectionTextField.setBounds(300, 740, 300, 50);
@@ -67,37 +69,37 @@ public class OrganizerView {
         sectionTextField.setBackground(Color.black);
         sectionTextField.setForeground(Color.WHITE);
         sectionTextField.setFont(new Font("Verdana", Font.BOLD, 20));
-        bottomPanel.add(sectionTextField);
+        initPanel.add(sectionTextField);
 
 
         approveButton = new JButton(new ImageIcon("img/approve.png"));
         approveButton.setBounds(150, 750, 80, 80);
-        bottomPanel.add(approveButton);
+        initPanel.add(approveButton);
 
         filterButton = new JButton("FILTER");
         filterButton.setBounds(400, 800, 100, 50);
         filterButton.setBackground(Color.BLACK);
         filterButton.setForeground(Color.WHITE);
-        bottomPanel.add(filterButton);
+        initPanel.add(filterButton);
 
         insertButton = new JButton(new ImageIcon("img/insert.png"));
         insertButton.setBounds(1470, 80, 60, 60);
-        bottomPanel.add(insertButton);
+        initPanel.add(insertButton);
 
         deleteButton = new JButton(new ImageIcon("img/deleteIcon.jpg"));
         deleteButton.setBounds(1470, 170, 60, 60);
-        bottomPanel.add(deleteButton);
+        initPanel.add(deleteButton);
 
         updateButton = new JButton(new ImageIcon("img/update-icon.png"));
         updateButton.setBounds(1470, 260, 60, 60);
-        bottomPanel.add(updateButton);
+        initPanel.add(updateButton);
 
         sectionsTable = new JTable(sectionsData, sectionsHead);
         JScrollPane scrollPane2 = new JScrollPane(sectionsTable);
         scrollPane2.setBackground(Color.GRAY);
         scrollPane2.setBackground(Color.WHITE);
         scrollPane2.setBounds(850, 430, 700, 300);
-        bottomPanel.add(scrollPane2);
+        initPanel.add(scrollPane2);
 
         dateField = new JTextField("DATA dd/MM/uuuu");
         dateField.setBounds(850, 740, 300, 50);
@@ -105,7 +107,7 @@ public class OrganizerView {
         dateField.setBackground(Color.black);
         dateField.setForeground(Color.WHITE);
         dateField.setFont(new Font("Verdana", Font.BOLD, 20));
-        bottomPanel.add(dateField);
+        initPanel.add(dateField);
 
         startHourField = new JTextField("START");
         startHourField.setBounds(1200, 740, 150, 50);
@@ -113,7 +115,7 @@ public class OrganizerView {
         startHourField.setBackground(Color.black);
         startHourField.setForeground(Color.WHITE);
         startHourField.setFont(new Font("Verdana", Font.BOLD, 20));
-        bottomPanel.add(startHourField);
+        initPanel.add(startHourField);
 
         endHourField = new JTextField("END");
         endHourField.setBounds(1400, 740, 150, 50);
@@ -121,16 +123,20 @@ public class OrganizerView {
         endHourField.setBackground(Color.black);
         endHourField.setForeground(Color.WHITE);
         endHourField.setFont(new Font("Verdana", Font.BOLD, 20));
-        bottomPanel.add(endHourField);
+        initPanel.add(endHourField);
 
         addScheduleButton = new JButton("ADD SCHEDULE");
         addScheduleButton.setBounds(1150, 800, 200, 50);
         addScheduleButton.setBackground(Color.BLACK);
         addScheduleButton.setForeground(Color.WHITE);
-        bottomPanel.add(addScheduleButton);
+        initPanel.add(addScheduleButton);
 
-        frame.add(bottomPanel);
-        frame.add(bottomPanel);
+        languageComboBox = new JComboBox<>(languages);
+        languageComboBox.setBounds(5, 5, 80, 30);
+        initPanel.add(languageComboBox);
+
+        frame.add(initPanel);
+        frame.add(initPanel);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

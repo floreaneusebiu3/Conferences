@@ -5,9 +5,13 @@ import com.opencsv.CSVWriter;
 import model.*;
 import model.persistence.*;
 import utils.EmailSender;
+import utils.Language;
 import view.OrganizerView;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -24,8 +28,11 @@ public class OrganizerController implements Observer{
     private ParticipantPersistence participantPersistence;
     private PresentationFilePersistence presentationFilePersistence;
     private SchedulePersistence schedulePersistence;
+    private Language language;
 
-    public OrganizerController() {
+    public OrganizerController(Language language) {
+        this.language = language;
+        this.language.attachObserver(this);
         organizerView = new OrganizerView();
         sectionPersistence = new SectionPersistence();
         participantPersistence = new ParticipantPersistence();
@@ -39,7 +46,26 @@ public class OrganizerController implements Observer{
 
     @Override
     public void update() {
+        int index = language.getCurrentLanguage();
+       changeHeader(organizerView.getParticipantsFilesTable(), language.getOrganizerParticipantsHeadTexts().get(index));
+       changeHeader(organizerView.getSectionsTable(), language.getOrganizerSectionsHeadTexts().get(index));
+       changeHeader(organizerView.getFilteredParticipantsTable(), language.getOrganizerFilteredParticipantsHeadTexts().get(index));
+       organizerView.getSectionTextField().setText(language.getOrganizerSectionLabelTexts().get(index));
+       organizerView.getDateField().setText(language.getOrganizerDateLabelTexts().get(index));
+       organizerView.getStartHourField().setText(language.getOrganizerStartHourLabelTexts().get(index));
+       organizerView.getEndHourField().setText(language.getOrganizerEndHourLabelTexts().get(index));
+       organizerView.getFilterButton().setText(language.getOrganizerFilterButtonTexts().get(index));
+       organizerView.getAddScheduleButton().setText(language.getOrganizerAddScheduleTexts().get(index));
+    }
 
+    private void changeHeader(JTable table, String[] newHead) {
+        JTableHeader header = table.getTableHeader();
+        TableColumnModel colModel = header.getColumnModel();
+        for (int i = 0; i < colModel.getColumnCount(); i++) {
+            TableColumn col = colModel.getColumn(i);
+            col.setHeaderValue(newHead[i]);
+        }
+        header.repaint();
     }
 
     private void addActionListeners() {
@@ -72,8 +98,13 @@ public class OrganizerController implements Observer{
             approveUser();
             filterParticipants();
         });
+
+        organizerView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
     }
 
+    private void chooseLanguage() {
+        language.setCurrentLanguage(organizerView.getLanguageComboBox().getSelectedIndex());
+    }
     private void serializeParticipantsAndFiles() {
         String sectionName = organizerView.getSectionTextField().getText();
         List<Participant> participants = participantPersistence.getParticipantsBySection(sectionName);
@@ -210,12 +241,12 @@ public class OrganizerController implements Observer{
         String sectionName = (String) organizerView.getSectionsData()[selectedRow][0];
         Section section = getSection(sectionName);
         if (section == null) {
-            showMessage("YOU MUST SELECT AN EXISTING SECTION");
+            showMessage(language.getOrganizerMustSelectExistingSectionMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
         Schedule schedule = getSchedule(section, organizerView.getDateField().getText(), organizerView.getStartHourField().getText(), organizerView.getEndHourField().getText());
         if (schedule == null) {
-            showMessage("YOU MUST INSERT A VALID DATE");
+            showMessage(language.getOrganizerMustInsertValidDateMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
     }
@@ -241,7 +272,7 @@ public class OrganizerController implements Observer{
         List<Participant> participants = participantPersistence.readAll();
         List<PresentationFile> presentationFiles = presentationFilePersistence.readAll();
         if (participants.size() == 0 || presentationFiles.size() == 0 | !checkCorrectIndex(presentationFiles, participants, selectedRow)) {
-            showMessage("You haven't chosen a correct row");
+            showMessage(language.getOrganizerIncorrectRowMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
         Participant updatedParticipant = getParticipantByIndex(selectedRow, participants);
@@ -262,7 +293,7 @@ public class OrganizerController implements Observer{
 
     private boolean checkCorrectIndex(List<PresentationFile> presentationFiles, List<Participant> participants, int index) {
         if (index < 0 | index > presentationFiles.size() + participants.size()) {
-            showMessage("You must select a participant or file");
+            showMessage(language.getOrganizerMustSelectParticipantMessageTexts().get(language.getCurrentLanguage()));
             return false;
         }
         return true;
@@ -341,7 +372,7 @@ public class OrganizerController implements Observer{
         int selectedRow = organizerView.getParticipantsFilesTable().getSelectedRow();
         Section section = getSection((String) organizerView.getParticipantsData()[selectedRow][3]);
         if (section == null) {
-            showMessage("You must select an existing section");
+            showMessage(language.getOrganizerMustSelectParticipantMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
         Participant participant = getParticipant(selectedRow);
@@ -446,7 +477,7 @@ public class OrganizerController implements Observer{
         organizerView.getSectionTextField().addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (organizerView.getSectionTextField().getText().equals("SECTION")) {
+                if (organizerView.getSectionTextField().getText().equals(language.getOrganizerSectionLabelTexts().get(language.getCurrentLanguage()))) {
                     organizerView.getSectionTextField().setForeground(Color.WHITE);
                     organizerView.getSectionTextField().setText("");
                 }
@@ -455,7 +486,7 @@ public class OrganizerController implements Observer{
             @Override
             public void focusLost(FocusEvent e) {
                 if (organizerView.getSectionTextField().getText().isEmpty()) {
-                    organizerView.getSectionTextField().setText("SECTION");
+                    organizerView.getSectionTextField().setText(language.getOrganizerSectionLabelTexts().get(language.getCurrentLanguage()));
                 }
             }
         });
@@ -463,7 +494,7 @@ public class OrganizerController implements Observer{
         organizerView.getDateField().addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (organizerView.getDateField().getText().equals("DATA dd/MM/uuuu")) {
+                if (organizerView.getDateField().getText().equals(language.getOrganizerDateLabelTexts().get(language.getCurrentLanguage()))) {
                     organizerView.getDateField().setForeground(Color.WHITE);
                     organizerView.getDateField().setText("");
                 }
@@ -472,7 +503,7 @@ public class OrganizerController implements Observer{
             @Override
             public void focusLost(FocusEvent e) {
                 if (organizerView.getDateField().getText().isEmpty()) {
-                    organizerView.getDateField().setText("DATA dd/MM/uuuu");
+                    organizerView.getDateField().setText(language.getOrganizerDateLabelTexts().get(language.getCurrentLanguage()));
                 }
             }
         });
@@ -480,7 +511,7 @@ public class OrganizerController implements Observer{
         organizerView.getStartHourField().addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (organizerView.getStartHourField().getText().equals("START")) {
+                if (organizerView.getStartHourField().getText().equals(language.getOrganizerStartHourLabelTexts().get(language.getCurrentLanguage()))) {
                     organizerView.getStartHourField().setForeground(Color.WHITE);
                     organizerView.getStartHourField().setText("");
                 }
@@ -489,7 +520,7 @@ public class OrganizerController implements Observer{
             @Override
             public void focusLost(FocusEvent e) {
                 if (organizerView.getStartHourField().getText().isEmpty()) {
-                    organizerView.getStartHourField().setText("START");
+                    organizerView.getStartHourField().setText(language.getOrganizerStartHourLabelTexts().get(language.getCurrentLanguage()));
                 }
             }
         });
@@ -497,7 +528,7 @@ public class OrganizerController implements Observer{
         organizerView.getEndHourField().addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (organizerView.getEndHourField().getText().equals("END")) {
+                if (organizerView.getEndHourField().getText().equals(language.getOrganizerEndHourLabelTexts().get(language.getCurrentLanguage()))) {
                     organizerView.getEndHourField().setForeground(Color.WHITE);
                     organizerView.getEndHourField().setText("");
                 }
@@ -506,7 +537,7 @@ public class OrganizerController implements Observer{
             @Override
             public void focusLost(FocusEvent e) {
                 if (organizerView.getEndHourField().getText().isEmpty()) {
-                    organizerView.getEndHourField().setText("END");
+                    organizerView.getEndHourField().setText(language.getOrganizerEndHourLabelTexts().get(language.getCurrentLanguage()));
                 }
             }
         });

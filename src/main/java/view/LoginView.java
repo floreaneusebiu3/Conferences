@@ -22,6 +22,8 @@ public class LoginView {
     private JTextField mailField;
     private JButton loginButton;
     private JButton enterAsGuestButton;
+    private JComboBox<String> languageComboBox;
+    private String[] languages = {"english", "romana", "german"};
 
     public LoginView() {
         frame = new JFrame("ConferencesLogin");
@@ -77,6 +79,10 @@ public class LoginView {
         enterAsGuestButton.setFont(new Font("Verdana", Font.BOLD, 20));
         enterAsGuestButton.setBackground(Color.BLACK);
 
+        languageComboBox = new JComboBox<>(languages);
+        languageComboBox.setBounds(5, 5, 80, 30);
+
+        frame.add(languageComboBox);
         frame.add(mailField);
         frame.add(label);
         frame.add(usernameLabel);

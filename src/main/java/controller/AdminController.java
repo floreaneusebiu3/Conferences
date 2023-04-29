@@ -8,18 +8,25 @@ import model.persistence.ParticipantPersistence;
 import model.persistence.PresentationFilePersistence;
 import model.persistence.SectionParticipantPersistence;
 import model.persistence.UserPersistence;
+import utils.Language;
 import view.AdminView;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.List;
 import java.util.UUID;
 
-public class AdminController implements Observer{
+public class AdminController implements Observer {
     private AdminView adminView;
     private UserPersistence userPersistence;
     private ParticipantPersistence participantPersistence;
+    private Language language;
 
-    public AdminController() {
+    public AdminController(Language language) {
+        this.language = language;
+        this.language.attachObserver(this);
         adminView = new AdminView();
         userPersistence = new UserPersistence();
         participantPersistence = new ParticipantPersistence();
@@ -29,7 +36,19 @@ public class AdminController implements Observer{
 
     @Override
     public void update() {
+        int index = language.getCurrentLanguage();
+        changeHeader(adminView.getUsersTable(), language.getAdminUsersHeadTexts().get(index));
+        adminView.getAdminLabel().setText(language.getAdminLabesTexts().get(index));
+    }
 
+    private void changeHeader(JTable table, String[] newHead) {
+        JTableHeader header = table.getTableHeader();
+        TableColumnModel colModel = header.getColumnModel();
+        for (int i = 0; i < colModel.getColumnCount(); i++) {
+            TableColumn col = colModel.getColumn(i);
+            col.setHeaderValue(newHead[i]);
+        }
+        header.repaint();
     }
 
     private void addActionListeners() {
@@ -47,6 +66,12 @@ public class AdminController implements Observer{
             deleteUser();
             showDataInUsersTable();
         });
+
+        adminView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
+    }
+
+    private void chooseLanguage() {
+        language.setCurrentLanguage(adminView.getLanguageComboBox().getSelectedIndex());
     }
 
     private void deleteUser() {
@@ -54,7 +79,7 @@ public class AdminController implements Observer{
         List<Participant> participants = participantPersistence.readAll();
         User user = getSelectedUser(selectedRow);
         if (user == null) {
-            showMessage("YOU MUST SELECT A USER");
+            showMessage(language.getAdminMustSelectAUserMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
         for (Participant participant : participants) {
@@ -99,7 +124,7 @@ public class AdminController implements Observer{
         int index = adminView.getUsersTable().getSelectedRow();
         List<User> users = userPersistence.readAll();
         if (index > users.size() | index < 0) {
-            showMessage("You must select a user");
+            showMessage(language.getAdminMustSelectAUserMessageTexts().get(language.getCurrentLanguage()));
             return;
         }
         User user = getUser();

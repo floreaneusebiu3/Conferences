@@ -2,10 +2,14 @@ package controller;
 
 import model.*;
 import model.persistence.*;
+import utils.Language;
 import view.ParticipantView;
 
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class ParticipantController implements Observer{
+public class ParticipantController implements Observer {
     private ParticipantView participantView;
     private SectionPersistence sectionPersistence;
     private PresentationFilePersistence presentationFilePersistence;
@@ -22,8 +26,11 @@ public class ParticipantController implements Observer{
     private String userMail;
     private String selectedPresentationFile;
     private User loggedUser;
+    private Language language;
 
-    public ParticipantController(String userId, String userMail) {
+    public ParticipantController(Language language, String userId, String userMail) {
+        this.language = language;
+        this.language.attachObserver(this);
         this.userId = userId;
         this.userMail = userMail;
         participantView = new ParticipantView();
@@ -38,7 +45,26 @@ public class ParticipantController implements Observer{
 
     @Override
     public void update() {
+        int index = language.getCurrentLanguage();
+        changeHeader(participantView.getSectionsTable(), language.getParticipantSectionsHeadTexts().get(index));
+        changeHeader(participantView.getFilesTable(), language.getParticipantFilesHeadTexts().get(index));
+        changeHeader(participantView.getJoinedSectionsTable(), language.getParticipantJoinedSectionsHeadTexts().get(index));
+        participantView.getSectionsTableTitle().setText(language.getParticipantSectionsTableTitleTexts().get(index));
+        participantView.getJoinedSectionsTitle().setText(language.getParticipantJoinedSectionsTableTitleTexts().get(index));
+        participantView.getRegisteredCondition().setText(language.getParticipantRegisteredConditionTexts().get(index));
+        participantView.getJoinSectionButton().setText(language.getParticipantJoinSectionButtonTexts().get(index));
+        participantView.getSeeConferenceVolumeButton().setText(language.getParticipantSeeConferenceButtonTexts().get(index));
+        participantView.getOpenFileButton().setText(language.getParticipantOpenFileButtonTexts().get(index));
+    }
 
+    private void changeHeader(JTable table, String[] newHead) {
+        JTableHeader header = table.getTableHeader();
+        TableColumnModel colModel = header.getColumnModel();
+        for (int i = 0; i < colModel.getColumnCount(); i++) {
+            TableColumn col = colModel.getColumn(i);
+            col.setHeaderValue(newHead[i]);
+        }
+        header.repaint();
     }
 
     private void addActionsListeners() {
@@ -65,6 +91,12 @@ public class ParticipantController implements Observer{
                 participantView.getFrame().repaint();
             }
         });
+
+        participantView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
+    }
+
+    private void chooseLanguage() {
+        language.setCurrentLanguage(participantView.getLanguageComboBox().getSelectedIndex());
     }
 
     private void joinSection() {
@@ -76,12 +108,12 @@ public class ParticipantController implements Observer{
 
     private void addParticipantToSection(User user, String sectionId) {
         if (selectedPresentationFile == null) {
-            showMessage("You have to upload a file before join a section of this conference");
+            showMessage(language.getParticipantUploadFileMessageTexts().get(participantView.getLanguageComboBox().getSelectedIndex()));
             return;
         }
         Section section = sectionPersistence.getSectionById(sectionId);
         if (isParticipantAtThisSection(user, section)) {
-            showMessage("You have already joined this section");
+            showMessage(language.getParticipantAlreadyJoinedSectionMessageTexts().get(participantView.getLanguageComboBox().getSelectedIndex()));
             return;
         }
         Participant participant = getParticipant(user);
@@ -146,7 +178,7 @@ public class ParticipantController implements Observer{
         List<PresentationFile> files = presentationFilePersistence.readAll();
         int selectedFile = participantView.getFilesTable().getSelectedRow();
         if (selectedFile >= files.size() || selectedFile < 0) {
-            showMessage("You must select a file");
+            showMessage(language.getParticipantMustSelectFileMessageTexts().get(participantView.getLanguageComboBox().getSelectedIndex()));
             return;
         }
         PresentationFile presentationFile = files.get(selectedFile);
