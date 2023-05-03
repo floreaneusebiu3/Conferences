@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+
 @Setter
 @Getter
 public class OrganizerView {

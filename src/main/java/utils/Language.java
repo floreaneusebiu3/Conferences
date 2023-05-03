@@ -59,6 +59,7 @@ public class Language {
             "nu ati ales un rand valid", "sie haben nicht die richtige Zeile ausgewählt"});
     private List<String> organizerMustSelectParticipantMessageTexts = List.of(new String[]{"you must select a participant or a file",
             "trebuie sa selectati un participant sau un fisier", "sie müssen einen Teilnehmer oder eine Datei auswählen"});
+    private List<String> organizerChartsTitle  = List.of(new String[]{"PARTICIPANTS", "PARTICIPANTI", "TEILNEHMER"});
 
 
     private List<String[]> adminUsersHeadTexts = List.of(new String[][]{new String[]{"APPROVED", "FIRST NAME", "LAST NAME", "AGE", "MAIL", "ROLE", "USERNAME", "PASSWORD"},

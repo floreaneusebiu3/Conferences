@@ -19,6 +19,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -108,20 +110,32 @@ public class OrganizerController implements Observer {
         organizerView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
 
         organizerView.getSeeStatistics().addActionListener(e -> showCharts());
+
+        organizerView.getStatisticsFrame().addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                organizerView.getStatisticsFrame().getContentPane().removeAll();
+            }
+        });
     }
 
     private void showCharts() {
         DefaultPieDataset dataset = getDataSet();
-        JFreeChart chart1 = ChartFactory.createRingChart("PARTICIPANTS", dataset, true, true, false);
+        JFreeChart chart1 = ChartFactory.createRingChart(language.getOrganizerChartsTitle().get(language.getCurrentLanguage()), dataset, true, true, false);
         chart1.setBackgroundPaint(new Color(255, 255, 255));
-        JFreeChart chart2 = ChartFactory.createPieChart("PARTICIPANTS", dataset, true, true, false);
+        JFreeChart chart2 = ChartFactory.createPieChart(language.getOrganizerChartsTitle().get(language.getCurrentLanguage()), dataset, true, true, false);
         chart2.setBackgroundPaint(new Color(255, 255, 255));
         ChartPanel chartPanel1 = new ChartPanel(chart1);
         ChartPanel chartPanel2 = new ChartPanel(chart2);
+        chartPanel1.setLayout(null);
+        chartPanel2.setLayout(null);
         chartPanel1.setBounds(10, 10, 400, 400);
         chartPanel2.setBounds(450, 10, 400, 400);
         organizerView.getStatisticsFrame().add(chartPanel1);
         organizerView.getStatisticsFrame().add(chartPanel2);
+        organizerView.getStatisticsFrame().repaint();
         organizerView.getStatisticsFrame().setVisible(true);
     }
     private DefaultPieDataset getDataSet() {
