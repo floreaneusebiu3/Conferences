@@ -28,8 +28,8 @@ public class Language {
     private List<String> participantSectionsTableTitleTexts = List.of(new String[]{"SECTIONS", "SECTIUNI", "ABSCHNITT"});
     private List<String> participantJoinedSectionsTableTitleTexts = List.of(new String[]{"JOINED SECTIONS", "SECTIUNI CURENTE", "AKTUELLE ABSCHNITTE"});
     private List<String> participantRegisteredConditionTexts = List.of(new String[]{"(only registered participants)", "doar participantii logati", "(nur angemeldete Teilnehmer)"});
-    private List<String> participantJoinSectionButtonTexts = List.of(new String[]{"(JOIN", "ALATURA-TE", "VERBINDEN"});
-    private List<String> participantSeeConferenceButtonTexts = List.of(new String[]{"(JOIN", "ALATURA-TE", "VERBINDEN"});
+    private List<String> participantJoinSectionButtonTexts = List.of(new String[]{"JOIN", "ALATURA-TE", "VERBINDEN"});
+    private List<String> participantSeeConferenceButtonTexts = List.of(new String[]{"SEE CONFERENCE VOLUME", "VEZI VOLUMUL CONFERINTEI", "VERBINDEN"});
     private List<String> participantOpenFileButtonTexts = List.of(new String[]{"(OPEN FILE", "DESCHIDE FISIER", "DATEI ÖFFNEN"});
     private List<String> participantUploadFileMessageTexts = List.of(new String[]{"you have to upload a file before join a section of this conference",
             "trebuie sa incarci un fisier inainte de a te alatura la aceasta conferinta", "sie müssen eine Datei hochladen, bevor Sie einem Abschnitt dieser Konferenz beitreten können"});

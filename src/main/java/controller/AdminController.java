@@ -8,6 +8,14 @@ import model.persistence.ParticipantPersistence;
 import model.persistence.PresentationFilePersistence;
 import model.persistence.SectionParticipantPersistence;
 import model.persistence.UserPersistence;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 import utils.Language;
 import view.AdminView;
 
@@ -15,6 +23,10 @@ import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 

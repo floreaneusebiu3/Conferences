@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import model.*;
 import model.persistence.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import utils.EmailSender;
 import utils.Language;
 import view.OrganizerView;
@@ -22,12 +26,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
-public class OrganizerController implements Observer{
+public class OrganizerController implements Observer {
     private OrganizerView organizerView;
     private SectionPersistence sectionPersistence;
     private ParticipantPersistence participantPersistence;
     private PresentationFilePersistence presentationFilePersistence;
     private SchedulePersistence schedulePersistence;
+    private SectionParticipantPersistence sectionParticipantPersistence;
     private Language language;
 
     public OrganizerController(Language language) {
@@ -38,6 +43,7 @@ public class OrganizerController implements Observer{
         participantPersistence = new ParticipantPersistence();
         presentationFilePersistence = new PresentationFilePersistence();
         schedulePersistence = new SchedulePersistence();
+        sectionParticipantPersistence = new SectionParticipantPersistence();
         addFocusListeners();
         addActionListeners();
         showDataInSectionsTable();
@@ -47,15 +53,15 @@ public class OrganizerController implements Observer{
     @Override
     public void update() {
         int index = language.getCurrentLanguage();
-       changeHeader(organizerView.getParticipantsFilesTable(), language.getOrganizerParticipantsHeadTexts().get(index));
-       changeHeader(organizerView.getSectionsTable(), language.getOrganizerSectionsHeadTexts().get(index));
-       changeHeader(organizerView.getFilteredParticipantsTable(), language.getOrganizerFilteredParticipantsHeadTexts().get(index));
-       organizerView.getSectionTextField().setText(language.getOrganizerSectionLabelTexts().get(index));
-       organizerView.getDateField().setText(language.getOrganizerDateLabelTexts().get(index));
-       organizerView.getStartHourField().setText(language.getOrganizerStartHourLabelTexts().get(index));
-       organizerView.getEndHourField().setText(language.getOrganizerEndHourLabelTexts().get(index));
-       organizerView.getFilterButton().setText(language.getOrganizerFilterButtonTexts().get(index));
-       organizerView.getAddScheduleButton().setText(language.getOrganizerAddScheduleTexts().get(index));
+        changeHeader(organizerView.getParticipantsFilesTable(), language.getOrganizerParticipantsHeadTexts().get(index));
+        changeHeader(organizerView.getSectionsTable(), language.getOrganizerSectionsHeadTexts().get(index));
+        changeHeader(organizerView.getFilteredParticipantsTable(), language.getOrganizerFilteredParticipantsHeadTexts().get(index));
+        organizerView.getSectionTextField().setText(language.getOrganizerSectionLabelTexts().get(index));
+        organizerView.getDateField().setText(language.getOrganizerDateLabelTexts().get(index));
+        organizerView.getStartHourField().setText(language.getOrganizerStartHourLabelTexts().get(index));
+        organizerView.getEndHourField().setText(language.getOrganizerEndHourLabelTexts().get(index));
+        organizerView.getFilterButton().setText(language.getOrganizerFilterButtonTexts().get(index));
+        organizerView.getAddScheduleButton().setText(language.getOrganizerAddScheduleTexts().get(index));
     }
 
     private void changeHeader(JTable table, String[] newHead) {
@@ -100,11 +106,47 @@ public class OrganizerController implements Observer{
         });
 
         organizerView.getLanguageComboBox().addActionListener(e -> chooseLanguage());
+
+        organizerView.getSeeStatistics().addActionListener(e -> showCharts());
+    }
+
+    private void showCharts() {
+        DefaultPieDataset dataset = getDataSet();
+        JFreeChart chart1 = ChartFactory.createRingChart("PARTICIPANTS", dataset, true, true, false);
+        chart1.setBackgroundPaint(new Color(255, 255, 255));
+        JFreeChart chart2 = ChartFactory.createPieChart("PARTICIPANTS", dataset, true, true, false);
+        chart2.setBackgroundPaint(new Color(255, 255, 255));
+        ChartPanel chartPanel1 = new ChartPanel(chart1);
+        ChartPanel chartPanel2 = new ChartPanel(chart2);
+        chartPanel1.setBounds(10, 10, 400, 400);
+        chartPanel2.setBounds(450, 10, 400, 400);
+        organizerView.getStatisticsFrame().add(chartPanel1);
+        organizerView.getStatisticsFrame().add(chartPanel2);
+        organizerView.getStatisticsFrame().setVisible(true);
+    }
+    private DefaultPieDataset getDataSet() {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        List<SectionParticipant> sectionParticipants = sectionParticipantPersistence.readAll();
+        Map<String, Integer> data = new HashMap<>();
+        for (SectionParticipant sectionParticipant : sectionParticipants) {
+            String sectionName = sectionParticipant.getSection().getName();
+            if (data.get(sectionName) == null) {
+                data.put(sectionName, 1);
+            } else {
+                int occurances = data.get(sectionName);
+                data.put(sectionName, occurances + 1);
+            }
+        }
+        for (Map.Entry<String, Integer> m : data.entrySet()) {
+            dataset.setValue(m.getKey(), m.getValue());
+        }
+        return dataset;
     }
 
     private void chooseLanguage() {
         language.setCurrentLanguage(organizerView.getLanguageComboBox().getSelectedIndex());
     }
+
     private void serializeParticipantsAndFiles() {
         String sectionName = organizerView.getSectionTextField().getText();
         List<Participant> participants = participantPersistence.getParticipantsBySection(sectionName);

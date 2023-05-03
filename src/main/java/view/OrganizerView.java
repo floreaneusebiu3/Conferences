@@ -32,6 +32,8 @@ public class OrganizerView {
     private JButton approveButton;
     private String[] languages = {"english", "romana", "german"};
     private JComboBox<String> languageComboBox;
+    private JButton seeStatistics;
+    private JFrame statisticsFrame;
 
     public OrganizerView() {
         frame = new JFrame("Organizer");
@@ -83,16 +85,20 @@ public class OrganizerView {
         initPanel.add(filterButton);
 
         insertButton = new JButton(new ImageIcon("img/insert.png"));
-        insertButton.setBounds(1470, 80, 60, 60);
+        insertButton.setBounds(1470, 30, 60, 60);
         initPanel.add(insertButton);
 
         deleteButton = new JButton(new ImageIcon("img/deleteIcon.jpg"));
-        deleteButton.setBounds(1470, 170, 60, 60);
+        deleteButton.setBounds(1470, 120, 60, 60);
         initPanel.add(deleteButton);
 
         updateButton = new JButton(new ImageIcon("img/update-icon.png"));
-        updateButton.setBounds(1470, 260, 60, 60);
+        updateButton.setBounds(1470, 210, 60, 60);
         initPanel.add(updateButton);
+
+        seeStatistics = new JButton(new ImageIcon("img/chart.png"));
+        seeStatistics.setBounds(1470, 300, 60, 60);
+        initPanel.add(seeStatistics);
 
         sectionsTable = new JTable(sectionsData, sectionsHead);
         JScrollPane scrollPane2 = new JScrollPane(sectionsTable);
@@ -135,7 +141,11 @@ public class OrganizerView {
         languageComboBox.setBounds(5, 5, 80, 30);
         initPanel.add(languageComboBox);
 
-        frame.add(initPanel);
+        statisticsFrame = new JFrame();
+        statisticsFrame.setSize(900, 450);
+        statisticsFrame.setLayout(null);
+        statisticsFrame.setVisible(false);
+
         frame.add(initPanel);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
