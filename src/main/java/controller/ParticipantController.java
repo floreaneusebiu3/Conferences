@@ -20,6 +20,7 @@ import java.util.UUID;
 public class ParticipantController implements Observer {
     private ParticipantView participantView;
     private SectionPersistence sectionPersistence;
+    private SectionParticipantPersistence sectionParticipantPersistence;
     private PresentationFilePersistence presentationFilePersistence;
     private ParticipantPersistence participantPersistence;
     private String userId;
@@ -36,6 +37,7 @@ public class ParticipantController implements Observer {
         participantView = new ParticipantView();
         presentationFilePersistence = new PresentationFilePersistence();
         sectionPersistence = new SectionPersistence();
+        sectionParticipantPersistence = new SectionParticipantPersistence();
         participantPersistence = new ParticipantPersistence();
         setUser();
         showDataInSectionsTable();
@@ -123,8 +125,14 @@ public class ParticipantController implements Observer {
     }
 
     private void addSectionParticipantsRow(Participant participant, Section section) {
+        List<SectionParticipant> sectionParticipants = sectionParticipantPersistence.readAll();
+        for (SectionParticipant sectionParticipant : sectionParticipants) {
+            if (sectionParticipant.getParticipant().getParticipantId().equals(participant.getParticipantId())) {
+                return;
+            }
+        }
         SectionParticipant sectionParticipant = getSectionParticipant(participant, section);
-        new SectionParticipantPersistence().insert(sectionParticipant);
+        sectionParticipantPersistence.insert(sectionParticipant);
     }
 
     private SectionParticipant getSectionParticipant(Participant participant, Section section) {
